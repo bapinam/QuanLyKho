@@ -1,0 +1,495 @@
+﻿@{ ViewData["Title"] = "Thông Tin Cá Nhân";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+
+<style>
+    .avatar-wrapper {
+        position: relative;
+        height: 160px;
+        width: 160px;
+        margin: 50px auto;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 1px 1px 15px -5px black;
+        transition: all .3s ease;
+    }
+
+        .avatar-wrapper :hover {
+            width: 160px;
+            height: 160px;
+            background-image: url("/img/arrow.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: all .3s ease;
+        }
+
+            .avatar-wrapper :hover .profile-pic {
+                opacity: .5;
+            }
+
+    .profile-pic {
+        height: 100%;
+        width: 100%;
+        transition: all .3s ease;
+    }
+
+    profile-pic:after {
+        font-family: FontAwesome;
+        content: "\f007";
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        font-size: 190px;
+        background: #ecf0f1;
+        color: #34495e;
+        text-align: center;
+    }
+
+    .upload-button {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+    .fa-arrow-circle-up {
+        position: absolute;
+        font-size: 234px;
+        top: -17px;
+        left: 0;
+        text-align: center;
+        opacity: 0;
+        transition: all .3s ease;
+        color: #34495e;
+    }
+
+    fa-arrow-circle-up:hover .fa-arrow-circle-up {
+        opacity: .9;
+    }
+</style>
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6" style="margin-bottom:8px; ">
+                <h1>Tài Khoản</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<section class="content" id="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Thông Tin Cá Nhân</h3>
+                        <div class="col-md-5" style="float:right;">
+                            <form asp-action="Index" method="get">
+                                <div class="form-group">
+                                    <div class="cold-md-6" style="float:right; ">
+                                        <a data-toggle="modal" data-target="#exampleEdit"
+                                           onclick="GetEditInfor()" class="btn btn-primary">
+                                            <i class="fas fa-pencil-square-o"></i>
+                                        </a>
+                                        <button type="button" onclick="window.location.href='/Home/Profile'" class="btn btn-dark">
+                                            <i class="fa fa-refresh"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <form id="frmImage" method="post">
+                            <div class="avatar-wrapper text-center">
+
+                                <img class="profile-pic profile-user-img img-fluid img-circle"
+                                     src="/img/user2-160x160.jpg"
+                                     alt="Hình ảnh nhân viên"
+                                     title="Thay đổi ảnh đại diện"
+                                     id="ImageAvatar12"
+                                     style="width:160px; height:160px;">
+
+                                <div class="upload-button">
+                                    <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+                                </div>
+                                <input type="hidden" name="Ten" value="@User.Identity.Name.ToString()" />
+                                <input class="file-upload" id="fileImage" type="file" accept="image/*" name="File" onchange="OnClickImage()" />
+                            </div>
+                        </form>
+
+                        <h3 class="profile-username text-center" id="codeView"></h3>
+
+                        <p class="text-muted text-center" id="nameView"></p>
+
+                        <p class="text-muted text-center" id="genderMen">
+                            <i class="fa fa-mars" style="color: #1C86EE; font-size:25px;"></i>
+                        </p>
+
+                        <p class="text-muted text-center" id="genderFe">
+                            <i class="fa fa-venus" style="color: #FF1493; font-size:25px;"></i>
+                        </p>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Chứng Minh Thư:</label>
+                                <span class="form-control" id="cardView" style="border:none; border-bottom:1px solid #EEEEEE;">
+                                </span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Ngày Sinh:</label>
+                                <span class="form-control" id="birthView" style="border:none; border-bottom:1px solid #EEEEEE;">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Điện Thoại:</label>
+                                <span class="form-control" id="phoneView" style="border:none; border-bottom:1px solid #EEEEEE;">
+                                </span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Email:</label>
+                                <span class="form-control" id="emailView" style="border:none; border-bottom:1px solid #EEEEEE;">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Tài Khoản:</label>
+                                <span class="form-control" id="usernameView" style="border:none; border-bottom:1px solid #EEEEEE;">
+                                </span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Tình Trạng Việc Làm:</label>
+                                <span class="form-control" id="workView" style="border:none; border-bottom:1px solid #EEEEEE;">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Địa Chỉ:</label>
+                            <span class="form-control" id="addressView" style="border:none; border-bottom:1px solid #EEEEEE;">
+                            </span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+<!--Modal sửa-->
+<div class="modal fade bd-example-modal-lg" id="exampleEdit" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông Tin Nhân Viên</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="formEdit" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="idE" />
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Họ</label>
+                            <input type="text" pattern="([A-Z a-z]).{1,49}" title="Vui lòng nhập không quá 50 chữ"
+                                   id="lastNameE" class="form-control" placeholder="Họ" required>
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Tên</label>
+                            <input type="text" pattern="([A-Za-z]).{1,49}" title="Vui lòng nhập không quá 50 chữ"
+                                   id="firstNameE" class="form-control" placeholder="Tên" required>
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Giới Tính</label>
+                            <select class="form-control" id="genderE" required>
+                                <option value="true">Nam</option>
+                                <option value="false">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Ngày Sinh</label>
+                            <input type="date" class="form-control" id="birthE"
+                                   pattern="^(0[1-9]|1[012])[-/.](0[1-9]|[12][0-9]|3[01])[-/.](19|20)\\d\\d$"
+                                   title="Ngày sinh không được lớn hơn năm hiện tại"
+                                   placeholder="Ngày sinh" required>
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Điện Thoại</label>
+                        <input type="text" pattern="[0-9]{10}" title="Vui lòng nhập 10 số" id="phoneE"
+                               class="form-control" placeholder="Điện thoại" required>
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control"
+                               id="emailE" onkeyup="getEmailE()" placeholder="Email" required>
+                        <span class="text-danger" id="showEmailE">
+                            Email đã có tài khoản sử dụng
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label>Địa Chỉ</label>
+                        <input type="text" class="form-control" id="addressE"
+                               placeholder="Địa chỉ" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" id="btnthemE" onclick="SaveEdit()" class="btn btn-primary">Lưu Lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    GetInfor();
+    function GetInfor() {
+        var name = '@User.Identity.Name';
+         var men = document.getElementById("genderMen");
+        var fe = document.getElementById("genderFe");
+       $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetByName", "Users")",
+                data: { name: name },
+                dataType: "json",
+                success: function (msg) {
+
+                    if (msg.gioiTinh == "Nam") {
+                        fe.style.display = 'none';
+                        men.style.display = 'block';
+
+                    } else {
+                        fe.style.display = 'block';
+                        men.style.display = 'none';
+
+                    }
+
+                    var name2 = msg.ho + " " + msg.ten;
+
+                    $("#idE").val(msg.id);
+                    $("#codeView").text(msg.maSo);
+                    $("#nameView").text(name2);
+                    $("#cardView").text(msg.canCuocCongDan);
+                    $("#birthView").text(msg.ngaySinhCapNhat);
+                    $("#phoneView").text(msg.soDienThoai);
+                    $("#emailView").text(msg.email);
+                    $("#usernameView").text(msg.userName);
+                    $("#workView").text(msg.tinhTrangLamViec);
+                    $("#addressView").text(msg.diaChi);
+
+                      if (msg.resultObj.length > 0) {
+                             var img = "@Configuration["BaseAddress"]" + msg.resultObj;
+                    $("#ImageAvatar").attr("src", img);
+                    $("#ImageAvatar12").attr("src", img);
+                    }
+
+              
+                },
+                error: function (req, status, error) {
+
+                }
+            });
+
+    }
+
+    function GetEditInfor() {
+         var name = '@User.Identity.Name';
+       $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetByName", "Users")",
+                data: { name: name },
+                dataType: "json",
+                success: function (msg) {
+
+                    if (msg.gioiTinh == "Nam") {
+
+                        $("#genderE").val("true");
+
+                    } else {
+                        $("#genderE").val("false");
+
+                    }
+
+                    var showEmailT = document.getElementById("showEmailE");
+                    var btnT = document.getElementById("btnthemE");
+                    showEmailT.style.display = 'none';
+                    btnT.style.display = 'block';
+
+                    $("#lastNameE").val(msg.ho);
+                    $("#firstNameE").val(msg.ten);
+                    $("#birthE").val(msg.ngaySinh);
+                    $("#phoneE").val(msg.soDienThoai);
+                    $("#emailE").val(msg.email);
+                    $("#addressE").val(msg.diaChi);
+                },
+                error: function (req, status, error) {
+
+                }
+            });
+    }
+</script>
+
+<!--Gửi email-->
+<script>
+    var showEd = document.getElementById("showEmailE");
+    showEd.style.display = 'none';
+    function getEmailE()
+    {
+
+        var name = '@User.Identity.Name';
+        var valEd = document.getElementById("emailE").value;
+        var btnEd = document.getElementById("btnthemE")
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("iEmailName", "Users")",
+                data: { email: valEd, name: name.toString() },
+                dataType: "json",
+                success: function (msg) {
+                    if (msg) {
+                        showEd.style.display = 'none';
+                        btnEd.style.display = 'block';
+
+                    } else {
+                        showEd.style.display = 'block';
+                        btnEd.style.display = 'none';
+
+                    }
+                },
+                error: function (req, status, error) {
+
+                }
+            });
+
+    }
+
+    var frm = $("#formEdit");
+    frm.submit(function (e) {
+        var id = document.getElementById("idE").value;
+        var lastName = document.getElementById("lastNameE").value;
+        var firstName = document.getElementById("firstNameE").value;
+        var gender = document.getElementById("genderE").value;
+        var birth = document.getElementById("birthE").value;
+        var phone = document.getElementById("phoneE").value;
+        var email = document.getElementById("emailE").value;
+        var address = document.getElementById("addressE").value;
+
+        var bundle =
+        {
+            Id: id,
+            Ho : lastName,
+            Ten : firstName,
+            GioiTinh : gender,
+            NgaySinh : birth,
+            SoDienThoai : phone,
+            Email : email,
+            DiaChi : address
+        };
+
+         $.ajax({
+                type: "PUT",
+             url: "@Url.Action("UpdateInfor","Users")",
+             data: bundle,
+             dataType: "json",
+             success: function (msg) {
+                 $('#exampleEdit').modal('hide');
+
+                 if (msg.isSuccessed) {
+                     toastr.success('Cập nhật thành công!')
+                     GetInfor();
+
+                 } else {
+                     toastr.error('Cập nhật thất bại!')
+
+                 }
+                },
+                error: function (req, status, error) {
+                    toastr.error('Cập nhật thất bại!')
+                    $('#exampleEdit').modal('hide');
+
+                }
+         });
+        e.preventDefault();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        var readURL = function (input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('.profile-pic').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(".file-upload").on('change', function () {
+            readURL(this);
+        });
+
+        $(".upload-button").on('click', function () {
+            $(".file-upload").click();
+        });
+    });
+
+    function OnClickImage() {
+
+        var name = '@User.Identity.Name.ToString()';
+        var form = $('#frmImage')[0];
+        var data = new FormData(form);
+
+         $.ajax({
+             type: "PUT",
+             enctype: 'multipart/form-data',
+             url: "@Url.Action("UpdateImage","Users")",
+             data: data,
+             processData: false,
+             contentType: false,
+             cache: false,
+            success: function (msg) {
+                if (msg.isSuccessed) {
+
+                    toastr.success('Thay đổi ảnh thành công')
+                    var img = "@Configuration["BaseAddress"]" + msg.resultObj;
+                    $("#ImageAvatar").attr("src", img);
+                    $("#ImageAvatar12").attr("src", img);
+
+                            } else {
+                    toastr.error('Thay đổi ảnh thất bại');
+
+                }
+
+            },
+            error: function (data) {
+                toastr.error('Thay đổi ảnh thất bại');
+            }
+        });
+    }
+</script>

@@ -1,0 +1,227 @@
+﻿@using QuanLyKho.ViewModels.Common;
+@model PagedResult<QuanLyKho.ViewModels.KeHoachCheBien.KeHoachCheBienModel>
+@{ ViewData["Title"] = "Kế Hoạch Chế Biến";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6" style="margin-bottom:8px; ">
+                <h1>Kế Hoạch Chế Biến</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right" style="margin-bottom:5px;">
+                    <div class="card-body">
+
+                        <!-- /btn-group -->
+                        <div class="input-group">
+                            <button id="add-new-event" type="button" class="btn btn-success"
+                                    data-toggle="modal" data-target="#modalThem">
+                                <i class="fas fa-plus"></i>
+                                Tạo Kế Hoạch
+                            </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button type="button" onclick="window.location.href='/KehoachCheBiens/Index'" class="btn btn-dark">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleChuThich">
+                                <i class="fa fa-question"></i>
+                            </button>
+                            <!-- /btn-group -->
+                        </div>
+                        <!-- /input-group -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body p-0">
+                        <!-- THE CALENDAR -->
+                        <div id="calendar"></div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+</section>
+<!--Modal chú thích-->
+<div class="modal fade" id="exampleChuThich" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chú Thích</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div style="margin-left:10px; margin-bottom:10px;font-size:20px;">
+                    <i class="fas fa-square" style="color: #f39c12;"></i>
+                    Kế hoạch chưa hoàn thành và chưa có người nhận
+                </div>
+                <div style="margin-left:10px; margin-bottom:10px;font-size:20px;">
+                    <i class="fas fa-square" style="color: #79378B;"></i>
+                    Kế hoạch chưa hoàn thành và đã có người nhận
+                </div>
+                @*<div style="margin-left:10px; margin-bottom:10px;font-size:20px;">
+                    <i class="fas fa-square" style="color: #FF0000;"></i>
+                    Kế hoạch bị hủy
+                </div>*@
+                <div style="margin-left:10px; margin-bottom:10px;font-size:20px;">
+                    <i class="fas fa-square" style=" color: #00a65a;"></i>
+                    Kế hoạch hoàn thành
+                </div>
+                <br />
+                <p style="color:red;">
+                    Lưu ý: Chỉ có kế hoạch chưa hoàn thành và chưa có người nhận mới được phép
+                    sử dụng tính năng sửa hoặc xóa
+                </p>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("ThemKeHoachCheBien")
+@await Html.PartialAsync("CapNhatKeHoachCheBien")
+@await Html.PartialAsync("XemKeHoachCheBien")
+<br />
+<section class="content">
+    <!-- Default box -->
+    <div class="card collapsed-box">
+        <div class="card-header">
+            <h3 class="card-title">Danh Sách Kế Hoạch Chế Biến</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <form asp-action="Index" method="get">
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <select class="form-control" data-placeholder="Chọn trạng thái..." name="trangThai" style="width: 100%;">
+                                        <option selected>Chọn trạng thái...</option>
+                                        <option value="1">Chưa Hoàn Thành - Chưa Nhận</option>
+                                        <option value="2">Chưa Hoàn Thành - Đã Nhận</option>
+                                        <option value="3">Đã Hoàn Thành</option>
+                                        <option value="4">Bị Hủy</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="NgayDuKienDanhSach" name="ngayDuKien" placeholder="Chọn ngày dự kiến">
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" name="tuKhoa"
+                                               placeholder="Nhập mã số hoặc tên kế hoạch">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="card-body">
+            <table id="example2" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã Số</th>
+                        <th>Tên</th>
+                        <th>Ngày Tạo</th>
+                        <th>Người Tạo</th>
+                        <th>Người Nhận</th>
+                        <th>Trạng Thái</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaSo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Ten)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NgayTao)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NguoiTao)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NguoiNhan)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TrangThai)
+                            </td>
+                            <td class="text-center py-0 align-middle">
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-success" data-toggle="modal" data-target="#exampleView"
+                                       onclick="GetViewShowDSKHCB('@item.Id')" title="Xem">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                @*<tfoot>
+                    <tr>
+                        <th>Mã Số</th>
+                        <th>Tên</th>
+                        <th>Ngày Tạo</th>
+                        <th>Người Tạo</th>
+                        <th>Người Nhận</th>
+                        <th>Trạng Thái</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </tfoot>*@
+            </table>
+
+            @await Component.InvokeAsync("Pager", Model)
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <!-- /.card -->
+</section>
+<br />
+<!-- fullCalendar 2.2.5 -->
+<script src="/lib/moment/moment.min.js"></script>
+<script src="/lib/fullcalendar/main.js"></script>
+<script src="/ui/KeHoachCheBienController/KeHoachCheBienController.js"></script>

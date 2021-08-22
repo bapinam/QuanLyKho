@@ -1,0 +1,261 @@
+﻿@using QuanLyKho.ViewModels.Common;
+@model PagedResult<QuanLyKho.ViewModels.KeHoachDatHang.NhanKeHoachDatHang>
+@{ ViewData["Title"] = "Nhiệm Vụ Kế Hoạch Đặt Hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6" style="margin-bottom:8px; ">
+                <h1>Nhiệm Vụ Kế Hoạch Đặt Hàng</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right" style="margin-bottom:5px;">
+                    <div class="card-body">
+
+                        <!-- /btn-group -->
+                        <div class="input-group">
+                            <button type="button" onclick="window.location.href='/NhiemVuKeHoachDathang/Index'" class="btn btn-dark">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                            <!-- /btn-group -->
+                        </div>
+                        <!-- /input-group -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <!-- Default box -->
+    <div class="card collapsed-box">
+        <div class="card-header">
+            <h3 class="card-title">Danh Sách Nhiệm Vụ</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <form asp-action="Index" method="get">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <select class="form-control" data-placeholder="Chọn trạng thái..." name="trangThai" style="width: 100%;">
+                                        <option>Chọn trạng thái...</option>
+                                        <option value="1">Chưa Hoàn Thành - Chưa Nhận</option>
+                                        <option value="2">Chưa Hoàn Thành - Đã Nhận</option>
+                                        <option value="3">Đã Hoàn Thành</option>
+                                        <option value="4">Bị Hủy</option>
+                                        <option value="5">Tất Cả</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="NgayDuKienDanhSach" name="ngayDuKien" placeholder="Chọn ngày dự kiến">
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" name="tuKhoa"
+                                               placeholder="Nhập mã số hoặc tên kế hoạch">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="card-body">
+            <table id="example2" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã Số</th>
+                        <th>Tên</th>
+                        <th>Ngày Dự Kiến</th>
+                        <th>Người Tạo</th>
+                        <th>Trạng Thái</th>
+                        <th>Tình Trạng</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr id="De-@Html.DisplayFor(modelItem => item.Id)">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaSo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Ten)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NgayDuKien)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NguoiTao)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TrangThai)
+                            </td>
+                            <td id="NhanKH-@Html.DisplayFor(modelItem => item.Id)">
+                                @Html.DisplayFor(modelItem => item.TinhTrang)
+                            </td>
+                            <td class="text-center py-0 align-middle">
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-success" data-toggle="modal" data-target="#exampleView"
+                                       onclick="GetView('@item.Id')" title="Xem">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-warning" data-toggle="modal" data-target="#exampleNhanKeHoach"
+                                       onclick="GetNhanKeHoach('@item.Id')" title="Nhận Kế Hoạch">
+                                        <i class="fas fa-handshake"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @await Component.InvokeAsync("Pager", Model)
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <!-- /.card -->
+</section>
+<!--Modal Hỏi nhận-->
+<div class="modal fade" id="exampleNhanKeHoach" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nhận Kế Hoạch Đặt Hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idNhanKeHoach" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn nhận kế hoạch đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxNhanKeHoach()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal xem kế hoạch-->
+<div class="modal fade bd-example-modal-lg" id="exampleView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xem Kế Hoạch Đặt Hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="form-row">
+                    <input type="hidden" id="idKeHoachXem" />
+                    <div class="form-group col-md-6">
+                        <label>Mã Số:</label>
+                        <span class="form-control" id="codeViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Tên Kế Hoạch:</label>
+                        <span class="form-control" id="nameViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Ngày Khởi Tạo:</label>
+                        <span class="form-control" id="createDateViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Ngày Dự Kiến:</label>
+                        <span class="form-control" id="dateDKViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Người Tạo:</label>
+                        <span class="form-control" id="nguoitaoViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Người Nhận:</label>
+                        <span class="form-control" id="nguoinhanViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Trạng Thái Kế Hoạch:</label>
+                        <span class="form-control" id="trangthaiViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Trạng Thái Nhận:</label>
+                        <span class="form-control" id="trangthaiNhanViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ghi Chú:</label>
+                    <span class="form-control" id="ghichuViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                    </span>
+                </div>
+                <div class="card-body">
+                    <label>
+                        Danh Sách Nguyên Vật Liệu Cần Đặt Hàng
+                    </label>
+                    <table id="tableShowViewKH12" class="table table-bordered table-striped table-hover table-responsive-xl">
+                        <thead>
+                            <tr>
+                                <th>Mã Số</th>
+                                <th>Nguyên Vật Liệu</th>
+                                <th>Số Lượng</th>
+                                <th>ĐVT</th>
+                                @*<th>Nhà Cung Cấp</th>*@
+                                <th>Trạng Thái</th>
+                                <th>Ghi Chú</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ShowViewKH12">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/ui/NhiemVuController/NhiemVuKeHoachDatHang.js"></script>

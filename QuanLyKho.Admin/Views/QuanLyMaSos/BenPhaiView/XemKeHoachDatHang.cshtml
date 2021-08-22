@@ -1,0 +1,335 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<div class="card direct-chat direct-chat-primary table-hover12">
+    <div class="card-header">
+        <h3 class="card-title">Kế Hoạch Đặt Hàng</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body" style="display:none;">
+        <div class="modal-body" >
+            <form id="FormKHDH" method="post">
+                <div class="form-row">
+                    <input type="hidden" id="TypeKHDH" name="MaLoai" value="@MaLoai.KeHoachDatHang" />
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenKHDH"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeKHDH()" required>
+                    </div>
+                    <span class="text-danger" id="showTenKHDH">
+                        Tên mã đã tồn tại
+                    </span>
+                    <div class="form-group col-md-6">
+                        <button type="submit" id="btnthemKHDH" class="btn btn-primary">Thêm Vào</button>
+                    </div>
+                    <small>Tên mã + số tự tăng: CODE1</small>
+                </div>
+            </form>
+        </div>
+        <div class="modal-body">
+            <table id="KHDHtable" class="table table-bordered ">
+                <thead>
+                    <tr>
+                        <th>Tên Mã</th>
+                        <th class="text-center">Ưu Tiên</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="addKHDH">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--Modal xóa-->
+<div class="modal fade" id="exampleDeleteKHDH" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDeleteKHDH" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn xóa dữ liệu đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDeleteKHDH()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Sửa-->
+<div class="modal fade" id="exampleEditKHDH" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idEditKHDH" />
+                <input type="hidden" id="MaLoaiKHDH" value="@MaLoai.KeHoachDatHang" />
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenKHDHEdit"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeKHDHEdit()" disabled>
+                        <span class="text-danger" id="erroGroupKHDH">
+                            Tên đã tồn tại
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" name="DinhDau" id="DinhDauEditKHDH">
+                            <option value="true">Bật</option>
+                            <option value="false">Tắt</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxSaveKHDH()" id="btnEditKHDH" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Kế Hoạch Đặt Hàng-->
+<script>
+    //kiểm tra tên
+    document.getElementById('showTenKHDH').style.display = "none";
+    function iCodeKHDH()
+    {
+        var nameKHDH = $('#TenKHDH').val().trim();
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameKHDH} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('showTenKHDH').style.display = "none";
+                    document.getElementById('btnthemKHDH').style.display = "block";
+                } else {
+                    document.getElementById('showTenKHDH').style.display = "block";
+                    document.getElementById('btnthemKHDH').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('showTenKHDH').style.display = "block";
+                    document.getElementById('btnthemKHDH').style.display = "none";
+
+                }
+            });
+    }
+
+    document.getElementById('erroGroupKHDH').style.display = "none";
+    document.getElementById('btnEditKHDH').style.display = "block";
+
+    function iCodeKHDHEdit()
+    {
+        var nameKHDH1 = $('#TenKHDHEdit').val().trim();
+        var id = $('#idEditKHDH').val().trim();
+        $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameKHDH1, id: id} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('erroGroupKHDH').style.display = "none";
+                    document.getElementById('btnEditKHDH').style.display = "block";
+                } else {
+                    document.getElementById('erroGroupKHDH').style.display = "block";
+                    document.getElementById('btnEditKHDH').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('erroGroupKHDH').style.display = "block";
+                 document.getElementById('btnEditKHDH').style.display = "none";
+
+                }
+            });
+    }
+    //
+   GetKHDH();
+    // Lấy giá trị của mã KHDH
+    function GetKHDH() {
+        var typeMVL = $("#TypeKHDH").val();
+
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("GetAll")",
+             data: {type: typeMVL} ,
+                dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+
+                    var str = '<tr id="KHDH-' + item.id +'">' +
+                        '<td>' + item.ten + '</td>' +
+                        '<td>' +
+                        '<select class="form-control select2bs4" >';
+
+                    if (item.dinhDau) {
+                        str = str + '      <option  value="true">Bật</option>' ;
+                    } else {
+                        str = str + '      <option  value="false">Tắt</option>';
+                    }
+
+                    str = str + ' </select>' +
+                        '</td>' +
+                        '<td class="text-center py-0 align-middle">' +
+                        '<div class="btn-group btn-group-sm">' +
+                        '<a class="btn btn-primary" data-toggle="modal" data-target="#exampleEditKHDH"' +
+                        '   onclick="GetEditKHDH(' + item.id + ', \'' + item.ten + '\',' + item.dinhDau +')" title="Sửa">' +
+                        '   <i class="fas fa-pencil-alt"></i>' +
+                        '</a>' +
+                        '<a class="btn btn-danger" data-toggle="modal" data-target="#exampleDeleteKHDH"' +
+                        '   onclick="GetDeleteKHDH(' + item.id + ')" title="Xóa">' +
+                        '    <i class="fas fa-trash"></i>' +
+                        ' </a>' +
+                        '</div>' +
+                        ' </td>' +
+                        ' </tr >';
+                    $('#addKHDH').append(str);
+                });
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Thêm thất bại')
+
+                }
+            });
+    }
+
+    // Thêm : btnthemKHDH,TenKHDH
+    var formKHDH = $('#FormKHDH');
+    formKHDH.submit(function (e) {
+        var nameKHDH = $('#TenKHDH').val().trim();
+        if (nameKHDH.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (nameKHDH.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Create")",
+                    data: formKHDH.serialize(),
+                    dataType: "json",
+                    success: function (msg) {
+                        toastr.success('Thêm thành công')
+
+                        $('#addKHDH').remove();
+                        $('#KHDHtable').append('<tbody id="addKHDH"></tbody>');
+                        GetKHDH();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Thêm thất bại')
+
+                    }
+                });
+            }
+        }
+        e.preventDefault();
+    });
+
+    // xóa
+    function GetDeleteKHDH(id) {
+        $("#idDeleteKHDH").val(id);
+    }
+
+    function ajaxDeleteKHDH() {
+        var id = $("#idDeleteKHDH").val();
+        $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("Delete")",
+            data: {id:id},
+                dataType: "json",
+            success: function (msg) {
+                 if (msg.isSuccessed) {
+                     $('#exampleDeleteKHDH').modal("hide")
+                     toastr.success('Xóa thành công')
+                     var de = "#KHDH-" + id;
+                     $(de).remove();
+                 } else {
+                     toastr.error('Xóa thất bại')
+                 }
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Xóa thất bại')
+
+                }
+            });
+    }
+
+    // CẬP nhật
+    function GetEditKHDH(id, name, top) {
+        document.getElementById('erroGroupKHDH').style.display = "none";
+        document.getElementById('btnEditKHDH').style.display = "block";
+        $("#idEditKHDH").val(id);
+        $("#TenKHDHEdit").val(name);
+        if (top) {
+            $("#DinhDauEditKHDH").val("true");
+        } else {
+            $("#DinhDauEditKHDH").val("false");
+        }
+    }
+
+    function ajaxSaveKHDH() {
+        var id = $("#idEditKHDH").val();
+        var name = $("#TenKHDHEdit").val();
+        var top = $("#DinhDauEditKHDH").val();
+        var type = $("#MaLoaiKHDH").val();
+        if (name.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (name.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                var data =
+                {
+                    Id: id,
+                    Ten: name,
+                    DinhDau: top,
+                    MaLoai: type
+                };
+                $.ajax({
+                    type: "PUT",
+                    url: "@Url.Action("Update")",
+                    data: data,
+                    dataType: "json",
+                    success: function (msg) {
+                        $('#exampleEditKHDH').modal("hide")
+                        toastr.success('Cập nhật thành công');
+                        $('#addKHDH').remove();
+                        $('#KHDHtable').append('<tbody id="addKHDH"></tbody>');
+                        GetKHDH();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Cập nhật thất bại');
+
+                    }
+                });
+            }
+        }
+    }
+</script>

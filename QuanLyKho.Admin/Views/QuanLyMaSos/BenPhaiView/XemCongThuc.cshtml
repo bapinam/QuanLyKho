@@ -1,0 +1,336 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<div class="card direct-chat direct-chat-primary table-hover12">
+    <div class="card-header">
+        <h3 class="card-title">Công Thức</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body" style="display:none;">
+        <div class="modal-body">
+            <form id="FormCT" method="post">
+                <div class="form-row">
+                    <input type="hidden" id="TypeCT" name="MaLoai" value="@MaLoai.CongThuc" />
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenCT"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeCT()" required>
+                    </div>
+                    <span class="text-danger" id="showTenCT">
+                        Tên mã đã tồn tại
+                    </span>
+                    <div class="form-group col-md-6">
+                        <button type="submit" id="btnthemCT" class="btn btn-primary">Thêm Vào</button>
+                    </div>
+                    <small>Tên mã + số tự tăng: CODE1</small>
+                </div>
+            </form>
+        </div>
+        <div class="modal-body">
+            <table id="CTtable" class="table table-bordered ">
+                <thead>
+                    <tr>
+                        <th>Tên Mã</th>
+                        <th class="text-center">Ưu Tiên</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="addCT">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--Modal xóa-->
+<div class="modal fade" id="exampleDeleteCT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDeleteCT" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn xóa dữ liệu đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDeleteCT()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Sửa-->
+<div class="modal fade" id="exampleEditCT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idEditCT" />
+                <input type="hidden" id="MaLoaiCT" value="@MaLoai.CongThuc" />
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenCTEdit"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeCTEdit()" disabled>
+                        <span class="text-danger" id="erroGroupCT">
+                            Tên đã tồn tại
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" name="DinhDau" id="DinhDauEditCT">
+                            <option value="true">Bật</option>
+                            <option value="false">Tắt</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxSaveCT()" id="btnEditCT" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Công Thức-->
+<script>
+    //kiểm tra tên
+    document.getElementById('showTenCT').style.display = "none";
+    function iCodeCT()
+    {
+        var nameCT = $('#TenCT').val().trim();
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameCT} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('showTenCT').style.display = "none";
+                    document.getElementById('btnthemCT').style.display = "block";
+                } else {
+                    document.getElementById('showTenCT').style.display = "block";
+                    document.getElementById('btnthemCT').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('showTenCT').style.display = "block";
+                    document.getElementById('btnthemCT').style.display = "none";
+
+                }
+            });
+    }
+
+    document.getElementById('erroGroupCT').style.display = "none";
+    document.getElementById('btnEditCT').style.display = "block";
+
+    function iCodeCTEdit()
+    {
+        var nameCT1 = $('#TenCTEdit').val().trim();
+        var id = $('#idEditCT').val().trim();
+        $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameCT1, id: id} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('erroGroupCT').style.display = "none";
+                    document.getElementById('btnEditCT').style.display = "block";
+                } else {
+                    document.getElementById('erroGroupCT').style.display = "block";
+                    document.getElementById('btnEditCT').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('erroGroupCT').style.display = "block";
+                 document.getElementById('btnEditCT').style.display = "none";
+
+                }
+            });
+    }
+    //
+   GetCT();
+    // Lấy giá trị của mã CT
+    function GetCT() {
+        var typeMVL = $("#TypeCT").val();
+
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("GetAll")",
+             data: {type: typeMVL} ,
+                dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+
+                    var str = '<tr id="CT-' + item.id +'">' +
+                        '<td>' + item.ten + '</td>' +
+                        '<td>' +
+                        '<select class="form-control select2bs4" >';
+
+                    if (item.dinhDau) {
+                        str = str + '      <option  value="true">Bật</option>' ;
+                    } else {
+                        str = str + '      <option  value="false">Tắt</option>';
+                    }
+
+                    str = str + ' </select>' +
+                        '</td>' +
+                        '<td class="text-center py-0 align-middle">' +
+                        '<div class="btn-group btn-group-sm">' +
+                        '<a class="btn btn-primary" data-toggle="modal" data-target="#exampleEditCT"' +
+                        '   onclick="GetEditCT(' + item.id + ', \'' + item.ten + '\',' + item.dinhDau +')" title="Sửa">' +
+                        '   <i class="fas fa-pencil-alt"></i>' +
+                        '</a>' +
+                        '<a class="btn btn-danger" data-toggle="modal" data-target="#exampleDeleteCT"' +
+                        '   onclick="GetDeleteCT(' + item.id + ')" title="Xóa">' +
+                        '    <i class="fas fa-trash"></i>' +
+                        ' </a>' +
+                        '</div>' +
+                        ' </td>' +
+                        ' </tr >';
+                    $('#addCT').append(str);
+                });
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Thêm thất bại')
+
+                }
+            });
+    }
+
+    // Thêm : btnthemCT,TenCT
+    var formCT = $('#FormCT');
+    formCT.submit(function (e) {
+        var nameCT = $('#TenCT').val().trim();
+        if (nameCT.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (nameCT.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            }else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Create")",
+                    data: formCT.serialize(),
+                    dataType: "json",
+                    success: function (msg) {
+                        toastr.success('Thêm thành công')
+
+                        $('#addCT').remove();
+                        $('#CTtable').append('<tbody id="addCT"></tbody>');
+                        GetCT();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Thêm thất bại')
+
+                    }
+                });
+            }
+        }
+        e.preventDefault();
+    });
+
+    // xóa
+    function GetDeleteCT(id) {
+        $("#idDeleteCT").val(id);
+    }
+
+    function ajaxDeleteCT() {
+        var id = $("#idDeleteCT").val();
+        $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("Delete")",
+            data: {id:id},
+                dataType: "json",
+            success: function (msg) {
+                 if (msg.isSuccessed) {
+                     $('#exampleDeleteCT').modal("hide")
+                     toastr.success('Xóa thành công')
+                     var de = "#CT-" + id;
+                     $(de).remove();
+                 } else {
+                     toastr.error('Xóa thất bại')
+                 }
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Xóa thất bại')
+
+                }
+            });
+    }
+
+    // CẬP nhật
+    function GetEditCT(id, name, top) {
+        document.getElementById('erroGroupCT').style.display = "none";
+        document.getElementById('btnEditCT').style.display = "block";
+        $("#idEditCT").val(id);
+        $("#TenCTEdit").val(name);
+        if (top) {
+            $("#DinhDauEditCT").val("true");
+        } else {
+            $("#DinhDauEditCT").val("false");
+        }
+    }
+
+    function ajaxSaveCT() {
+        var id = $("#idEditCT").val();
+        var name = $("#TenCTEdit").val();
+        var top = $("#DinhDauEditCT").val();
+        var type = $("#MaLoaiCT").val();
+        if (name.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (name.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                var data =
+                {
+                    Id: id,
+                    Ten: name,
+                    DinhDau: top,
+                    MaLoai: type
+                };
+                $.ajax({
+                    type: "PUT",
+                    url: "@Url.Action("Update")",
+                    data: data,
+                    dataType: "json",
+                    success: function (msg) {
+                        $('#exampleEditCT').modal("hide")
+                        toastr.success('Cập nhật thành công');
+                        $('#addCT').remove();
+                        $('#CTtable').append('<tbody id="addCT"></tbody>');
+                        GetCT();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Cập nhật thất bại');
+
+                    }
+                });
+            }
+        }
+
+    }
+</script>

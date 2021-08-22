@@ -1,0 +1,590 @@
+﻿@using QuanLyKho.ViewModels.Common;
+@using QuanLyKho.Data.Extensions.Enums;
+@using QuanLyKho.Utilities.Constants;
+@model PagedResult<QuanLyKho.ViewModels.NguyenVatLieu.NguyenVatLieuModel>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@{ ViewData["Title"] = "Nguyên Vật Liệu";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+@{ var admin = User.Claims.Any(x => x.Value == SystemConstants.ListRole.Admin); }
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6" style="margin-bottom:8px; ">
+                <h1>Nguyên Vật Liệu</h1>
+            </div>
+            <div class="col-sm-6">
+                @{
+                    if (admin)
+                    {
+                                <div class="float-sm-right" style="margin-bottom:5px;">
+                                    <button type="button" class="btn btn-block bg-gradient-success" data-toggle="modal" data-target="#modalThem">
+                                        <i class="fas fa-plus"></i>
+                                        Thêm Dữ Liệu
+                                    </button>
+                                </div>
+                    }
+
+                }
+                
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content" id="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Danh Sách</h3>
+                        <div class="col-md-7" style="float:right;">
+                            <form asp-action="Index" method="get">
+                                <div class="form-row">
+                                    <div class="form-group" style="margin-left: 5px;">
+                                        <select id="GroupType1" name="idLoaiNguyenVatLieu" class="form-control select2bs4"
+                                                style="width:230px; float:right;" required>
+                                            <option selected>Chọn loại nguyên vật liệu... </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="text" value="@ViewBag.Keyword" name="tuKhoa" class="form-control" placeholder="Nhập mã số hoặc tên nguyên vật liệu" />
+                                    </div>
+                                    <div class="cold-md-5">
+                                        <button type="submit" class="btn btn-primary">Tìm</button>
+                                        <button type="button" onclick="window.location.href='/NguyenVatLieus/Index'" class="btn btn-dark">
+                                            <i class="fa fa-refresh"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Mã Số</th>
+                                    <th>Tên</th>
+                                    <th>Hình Ảnh</th>
+                                    <th>Số Lượng</th>
+                                    <th>ĐVT</th>
+                                    <th>Nhắc Nhở</th>
+                                    <th>Loại</th>
+                                    <th class="text-center">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addTR">
+
+                                @foreach (var item in Model.Items)
+                                {
+                    <tr id="DeI-@Html.DisplayFor(modelItem => item.Id)">
+                        <td id="Code-@Html.DisplayFor(modelItem => item.Id)">
+                            @Html.DisplayFor(modelItem => item.MaSo)
+                        </td>
+                        <td id="Name-@Html.DisplayFor(modelItem => item.Id)">
+                            @Html.DisplayFor(modelItem => item.Ten)
+                        </td>
+                        <td id="Image-@Html.DisplayFor(modelItem => item.Id)">
+                            <div id="UpdateImage-@Html.DisplayFor(modelItem => item.Id)">
+                                <img src="@(Configuration["BaseAddress"] + @item.HinhAnh)"
+                                     style="width:50px; height:50px;" />
+                            </div>
+                        </td>
+                        <td id="Amount-@Html.DisplayFor(modelItem => item.Id)">
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-default">
+                                    @Html.DisplayFor(modelItem => item.SoLuong)
+                                </button>
+                                <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu" role="menu">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="progress progress-xs">
+                                                        <div class="progress-bar progress-bar-danger" style="width: @Html.DisplayFor(modelItem => item.PhanTramSoLuong)%"></div>');
+                                                    </div>
+                                                </td>
+                                                <td style="width: 40px;">
+                                                    <span class="badge bg-danger">
+                                                        @Html.DisplayFor(modelItem => item.PhanTramSoLuong) %
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                        <td id="Pack-@Html.DisplayFor(modelItem => item.Id)">
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-warning" id="TextPack-@Html.DisplayFor(modelItem => item.Id)">
+                                    @Html.DisplayFor(modelItem => item.TenDVTCoBan)
+                                </button>
+                                <button type="button" class="btn btn-warning dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                @{ if (admin)
+                                                    {
+                                    <div class="dropdown-menu" role="menu">
+                                        <a class="dropdown-item"
+                                           data-toggle="modal" data-target="#examplePack"
+                                           onclick="GetDonViTinh('@item.Id','@LoaiDongGoi.NguyenVatLieu')">Thao Tác</a>
+                                    </div> } }
+
+                            </div>
+                        </td>
+                        <td id="Reminder-@Html.DisplayFor(modelItem => item.Id)">
+                            @if (item.NhacNho)
+                            {
+                            <div id="Re-@Html.DisplayFor(modelItem => item.Id)" class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-success">Bật</button>
+                                <button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                    
+                                                                <div class="dropdown-menu" role="menu">
+                                                                    <a class="dropdown-item"
+                                                                       data-toggle="modal" data-target="#exampleNhacNho"
+                                                                       onclick="GetNhacNho('@item.Id')">Thao Tác</a>
+                                                                </div>
+                                    
+
+                                
+                                
+                            </div>}
+        else
+        {
+<div id="Re-@Html.DisplayFor(modelItem => item.Id)" class="btn-group btn-group-sm">
+    <button type="button" class="btn btn-danger">Tắt</button>
+    <button type="button" class="btn btn-danger dropdown-toggle dropdown-icon" data-toggle="dropdown">
+        <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <div class="dropdown-menu" role="menu">
+        <a class="dropdown-item"
+           data-toggle="modal" data-target="#exampleNhacNho"
+           onclick="GetNhacNho('@item.Id')">Thao Tác</a>
+    </div>
+</div>}
+                        </td>
+                        <td id="MaterialType-@Html.DisplayFor(modelItem => item.Id)">
+                            @Html.DisplayFor(modelItem => item.TenLoaiNVL)
+                        </td>
+                        <td class="text-center py-0 align-middle">
+                            <div class="btn-group btn-group-sm">
+                                <a class="btn btn-success" data-toggle="modal" data-target="#exampleView"
+                                   onclick="GetView('@item.Id')" title="Xem">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @{ if (admin)
+                                                    {
+                                    <a class="btn btn-primary" data-toggle="modal" data-target="#exampleEdit"
+                                       onclick="GetEdit('@item.Id')" title="Sửa">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                                        <a class="btn btn-danger" data-toggle="modal" data-target="#exampleDelete"
+                                                           onclick="GetDelete('@item.Id')" title="Xóa">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a> } }
+
+                            </div>
+                        </td>
+                    </tr>
+}
+                            </tbody>
+                            @*<tfoot>
+                                <tr>
+                                    <th>Mã Số</th>
+                                    <th>Tên</th>
+                                    <th>Hình Ảnh</th>
+                                    <th>Số Lượng</th>
+                                    <th>ĐVT</th>
+                                    <th>Nhắc Nhở</th>
+                                    <th>Loại</th>
+                                    <th class="text-center">Thao Tác</th>
+                                </tr>
+                            </tfoot>*@
+                        </table>
+
+                        @await Component.InvokeAsync("Pager", Model)
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+<!--Modal thêm-->
+<div class="modal fade bd-example-modal-lg" id="modalThem" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nguyên Vật Liệu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="formaddNVL" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Mã Số</label>
+                            <select id="Code" name="MaSo" class="form-control select2bs4" required>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Tên</label>
+                            <input type="text" class="form-control" name="Ten" id="Name" onkeyup="getNameAdd()" placeholder="Tên nguyên vật liệu" required>
+                            <span class="text-danger" id="showName">
+                                Tên nguyên vật liệu đã tồn tại
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Loại Nguyên Vật Liệu</label>
+                            <select id="GroupType" name="IdLoaiNguyenVatLieu" class="form-control select2bs4">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Hình Ảnh</label>
+                            <input type="file" accept="image/*" class="form-control-file"
+                                   onchange="loadFile(event)" name="HinhAnh" style="width:50%;" required>
+                            <img id="output" style="width:60px; height:60px; margin-top:2px;" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAddress">Mô Tả</label>
+                        <textarea class="form-control" name="MoTa" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAddress">Tên Đơn Vị Tính (cơ bản)</label>
+                        <input type="text" class="form-control" id="Default" name="TenDVTCoBan" placeholder="Tên đơn vị tính" required>
+                        <small>Giả sử: 1 ĐVT = 100 ĐVT (cơ bản)</small>
+                    </div>
+                    <div id="result12"></div>
+
+                    <button type="button" onclick="add_element()" class="btn btn-success btn-sm" autocomplete="false">Thêm Đơn Vị Tính</button>
+                    <br /><br />
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label for="inputAddress">Nhắc Nhở</label><br />
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn bg-olive active">
+                                    <input type="radio" name="NhacNho" class="radioBtnClass" id="option_a1NhacNho" onclick="OnNhacNho()" value="true" autocomplete="off" checked> Bật
+                                </label>
+                                <label class="btn bg-olive">
+                                    <input type="radio" name="NhacNho" class="radioBtnClass" id="option_a2NhacNho" onclick="OffNhacNho()" value="false" autocomplete="off"> Tắt
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="content">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Mức Tồn Tối Thiểu</label>
+                                <input type="number" id="Min" min="0" max="999999999999" class="form-control" name="MucTonThapNhat" placeholder="Mức tồn tối thiểu">
+                                <span class="text-danger" id="ShowMin">Vui lòng không bỏ trống</span>
+                                <span class="text-danger" id="ShowMinMax">Mức tối thiểu phải nhỏ hơn mức tối đa</span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Mức Tồn Tối Đa</label>
+                                <input type="number" id="Max" min="0" max="999999999999" class="form-control" name="MucTonCaoNhat" placeholder="Mức tồn tối đa">
+                                <span class="text-danger" id="ShowMax">Vui lòng không bỏ trống</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" id="btnthem" class="btn btn-primary">Lưu Lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Xóa nguyên vật liệu-->
+<div class="modal fade" id="exampleDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nguyên Vật Liệu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDelete" />
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Bạn có muốn xóa dữ liệu đã chọn?
+                    <br /><small style="color:red;">Bao gồm tất cả dữ liệu liên quan tới nguyên vật liệu này</small>
+                </h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDelete()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal sửa-->
+<div class="modal fade bd-example-modal-lg" id="exampleEdit" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nguyên Vật Liệu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="formEDIT" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="IdE" name="IdNguyenVatLieu" />
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Mã Số</label>
+                            <input type="text" class="form-control" name="MaSo" id="CodeE" placeholder="Mã số" disabled>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Tên</label>
+                            <input type="text" class="form-control" name="Ten" id="NameE" onkeyup="getName()" placeholder="Tên nguyên vật liệu" required>
+                            <span class="text-danger" id="showNameE">
+                                Tên nguyên vật liệu đã tồn tại
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Loại Nguyên Vật Liệu</label>
+                            <div id="showGr">
+                                <div id="showGr2">
+                                    <select id="GroupTypeE" name="IdLoaiNguyenVatLieu" class="form-control select2bs4" required>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Hình Ảnh</label>
+                            <div id="showIm">
+                                <div id="ImageP">
+                                </div>
+                            </div>
+                            <div style="float:left;">
+                                Thay đổi ảnh:&nbsp;
+                            </div>
+                            <div style="float:left;" id="chenHinh">
+                                <input type="file" class="form-control-file" accept="image/*" id="hinhEditT"
+                                       onchange="loadFileEdit(event)" name="hinhAnh">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAddress">Mô Tả</label>
+                        <textarea class="form-control" id="DescriptionE" name="MoTa" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" id="btnthemE" class="btn btn-primary">Lưu Lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!---->
+@await Html.PartialAsync("XemNguyenVatLieu")
+<!---->
+@await Html.PartialAsync("PhanMoRong")
+<!---->
+<script src="/ui/NguyenVatLieuController/NguyenVatLieuController.js"></script>
+
+<script>
+    var typeMVL = "@MaLoai.NguyenVatLieu";
+    GetNguyenVatLieu(typeMVL);
+
+    // Tạo nguyên vật liệu
+    var formaddNVL = $('#formaddNVL');
+
+    formaddNVL.submit(function (e) {
+        var ketQua = KiemTraThem();
+        if (ketQua == 0)
+        {
+            var form = $('#formaddNVL')[0];
+            var data = new FormData(form);
+            $.ajax({
+                 type: "POST",
+                 enctype: 'multipart/form-data',
+                 url: "@Url.Action("Create")",
+                 data: data,
+                 processData: false,
+                 contentType: false,
+                 cache: false,
+                success: function (msg) {
+                    toastr.success('Thêm thành công')
+                    if (msg.isSuccessed) {
+                        $('#modalThem').modal('hide');
+                        $('#formaddNVL').trigger("reset");
+                        var anh = '@(Configuration["BaseAddress"])' + msg.resultObj.hinhAnh;
+
+                        ThemPhanTu(msg,anh);
+
+                    } else {
+                        toastr.error(msg.resultObj);
+                    }
+                },
+                error: function (data) {
+                    toastr.error('Thêm thất bại')
+                }
+            });
+        }
+        e.preventDefault();
+    });
+
+    // xóa nguyên vật liệu
+    function ajaxDelete() {
+        var id = document.getElementById("idDelete").value;
+        $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("Delete")",
+            data: { Id: id },
+             dataType: "json",
+             success: function (msg) {
+
+                 $('#exampleDelete').modal('hide');
+                 if (msg.isSuccessed) {
+                     toastr.success('Xoá thành công')
+                     var de = "#DeI-" + id;
+                     $(de).remove();
+                 } else {
+                     toastr.error(msg.resultObj)
+                 }
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Xóa thất bại, vì dữ liệu đã tồn tại ở bảng khác')
+
+                }
+         });
+
+    }
+
+    // lấy thông tin edit
+    function GetEdit(id) {
+        $("#hinhEditT").remove();
+        $("#chenHinh").append('<input type="file" class="form-control-file" accept="image/*" id="hinhEditT" onchange ="loadFileEdit(event)"  name ="hinhAnh">');
+
+        var showNameE = document.getElementById("showNameE");
+        var btnT = document.getElementById("btnthemE");
+        showNameE.style.display = 'none';
+        btnT.style.display = 'block';
+        var url = "/NguyenVatLieus/GetByUpdateNguyenVatLieu/";
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: { id: id },
+            dataType: "json",
+            success: function (msg) {
+                var my = document.getElementById("showGr2");
+                my.remove();
+                $("#showGr").append(
+                    '<div id="showGr2">' +
+                    '<select id="GroupTypeE" name="IdLoaiNguyenVatLieu" class="form-control select2bs4" required>' +
+                    '</select>' +
+                    '</div>');
+
+                var my1 = document.getElementById("ImageP");
+                my1.remove();
+
+                var anh = '@(Configuration["BaseAddress"])' + msg.resultObj.hinhAnh;
+                $('#showIm').append('<div id="ImageP"><img src ="' + anh + '"' +
+                    'style = "width:50px; height: 50px;" id="hinhEdit" /></div>');
+                $("#IdE").val(id);
+                $("#CodeE").val(msg.resultObj.maSo);
+                $("#NameE").val(msg.resultObj.ten);
+                $("#DescriptionE").val(msg.resultObj.moTa);
+                $("#GroupTypeE").append('<option value="' + msg.resultObj.idLoaiNVL + '">' + msg.resultObj.tenLoaiNVL + '</option>');
+                getId(msg.resultObj.idLoaiNVL);
+                $('.select2bs4').select2({
+                    theme: 'bootstrap4'
+                })
+            },
+            error: function (req, status, error) {
+            }
+        });
+    }
+
+    // cập nhật nguyên vật liệu
+     var frEdit = $('#formEDIT');
+
+    frEdit.submit(function (e) {
+        var formE = $('#formEDIT')[0];
+        var dataE = new FormData(formE);
+         $.ajax({
+             type: "PUT",
+             enctype: 'multipart/form-data',
+             url: "@Url.Action("Update")",
+             data: dataE,
+             processData: false,
+             contentType: false,
+             cache: false,
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    $('#exampleEdit').modal('hide');
+                    $('#formEDIT').trigger("reset");
+
+                    toastr.success('Cập nhật thành công')
+
+                    var ten = "#Name-" + msg.resultObj.id;
+
+                    var hinh = "#Image-" + msg.resultObj.id;
+                    var loai = "#MaterialType-" + msg.resultObj.id;
+
+                    $(ten).text(msg.resultObj.ten);
+                    $(loai).text(msg.resultObj.tenLoaiNVL);
+
+                    var de = "UpdateImage-" + msg.resultObj.id;
+                    var my1 = document.getElementById(de);
+                    my1.remove();
+
+                           var str = '@(Configuration["BaseAddress"])' + msg.resultObj.hinhAnh;
+                           $(hinh).append('<div id="UpdateImage-' + msg.resultObj.id+'">'+
+                                        ' <img src="'+str+'"'+
+                                                'style="width:50px; height:50px;" />'+
+                                            ' </div>');
+
+                            } else {
+                    toastr.error('Cập nhật thất bại')
+                    $('#exampleEdit').modal('hide');
+                    $('#formEDIT').trigger("reset");
+
+                }
+
+            },
+            error: function (data) {
+                toastr.error('Cập nhật thất bại')
+                $('#exampleEdit').modal('hide');
+                $('#formEDIT').trigger("reset");
+            }
+        });
+
+        e.preventDefault();
+
+    });
+</script>

@@ -1,0 +1,265 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<style>
+    #modalThem {
+        overflow-y: scroll
+    }
+</style>
+
+<!--Modal Nhập hàng-->
+<div class="modal fade  bd-example-modal-lg" id="modalThem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nhập Hóa Đơn</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <form id="CreateHoaDonBill" method="post">
+
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Mã Lưu Trữ</label>
+                            <select id="CodeChon" name="MaLuuTru" class="form-control" required>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Số Hóa Đơn</label>
+                            <input type="text" class="form-control" name="SoHoaDon" id="SoHoaDon" onkeyup="checkSHD()" placeholder="Số hóa đơn" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Nhà Cung Cấp</label>
+                            <button type="button" class="form-control" onclick="GetNhaCungCap()"
+                                    data-toggle="modal" data-target="#exampleNhaCungCap">
+                                <div id="NameNhaCungCap"></div>
+                            </button>
+                            <input id="IdSupliers" name="IdNhaCungCap" type="hidden" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Ngày Mua Hàng</label>
+                            <input type="date" class="form-control" name="NgayMua" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Thuế Suất GTGT (%)</label>
+                            <input type="text" class="form-control" onkeyup="checkThue()" id="Thue" name="SoThue" placeholder="Thuế suất GTGT">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Số Tiền Đã Thanh Toán (VNĐ)</label>
+                            <input type="text" class="form-control" id="AmountPaidShow" onkeyup="checkAmoutPaid()" value="0" placeholder="Số tiền đã thanh toán" required>
+                            <input type="hidden" class="form-control" name="SoTienDaThanhToan" id="AmountPaid" value="0" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Danh Sách Nguyên Vật Liệu</h5>
+                        </div>
+                        <input type="hidden" class="form-control" name="IdChiMuc" value="@ViewBag.ChiMuc">
+                        <input name="NguoiTao" type="hidden" value="@User.Identity.Name" />
+                        <input id="IdOrderPlan" name="IdKeHoach" type="hidden" />
+                        <input class="form-control" type="hidden" value="0" name="TongTien" id="tongTienHoaDon" />
+                        <table id="table34NCC" class="table table-bordered table-striped table-hover table-responsive-xl">
+                            <thead>
+                                <tr>
+                                    <th>Mã Số</th>
+                                    <th>Tên</th>
+                                    <th>ĐVT</th>
+                                    <th>Số Lượng</th>
+                                    <th>Đơn Giá (VNĐ)</th>
+                                    <th>Giảm Giá (%)</th>
+                                    <th>Thành Tiền (VNĐ)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableAddNVL">
+                                <tr>
+                                    <td>hihi</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <input class="form-control" type="number" min="0" max="0" value="0" name="SoLuong[]" />
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="number" min="0" max="0" value="0" name="DonGia[]" />
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="number" min="0" max="100" value="0" name="GiamGia[]" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu Lại</button>
+                </div>
+            </form>
+
+            <!---->
+        </div>
+    </div>
+</div>
+
+<!--Modal nhà cung cấp-->
+<div class="modal fade  bd-example-modal-lg" id="exampleNhaCungCap" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nhà Cung Cấp</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <form id="frmTKNCCBill" method="post">
+                    <div class="form-group">
+                        <input class="form-control" type="search" style="width:93%; float:left; margin-right:7px;" id="keywordNCC"
+                               placeholder="Tìm kiếm mã số hoặc tên nhà cung cấp" aria-label="Search" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Danh Sách Tìm Kiếm</h5>
+                    </div>
+                    <table id="table34NCCBill" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã Số</th>
+                                <th>Tên</th>
+                                <th>Địa Chỉ</th>
+                                <th class="text-center">Thêm</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableAddNCCBill">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // lấy mã code lưu trữ
+    GetCodeNhapDatHang();
+    // Lấy giá trị của mã User
+    function GetCodeNhapDatHang() {
+        var typeMVL = "@MaLoai.HoaDon";
+         $.ajax({
+             type: "GET",
+              url: "@Url.Action("GetAll","QuanLyMaSos")",
+             data: {type: typeMVL} ,
+             dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+                    //Code
+                    str = '<option value="' + item.ten +'">'+item.ten+'</option>';
+                    $('#CodeChon').append(str);
+                });
+
+                },
+                error: function (req, status, error) {
+
+                }
+            });
+    }
+
+    // nhập hóa đơn
+    var CreateHoaDonBill = $("#CreateHoaDonBill");
+    CreateHoaDonBill.submit(function (e) {
+        var idSuppliers = $("#IdSupliers").val();
+        if (idSuppliers <= 0) {
+            toastr.error('Vui lòng chọn nhà cung cấp');
+        } else {
+            var thue = $("#Thue").val();
+
+            if (thue < 0 || thue > 100) {
+                toastr.error('Vui lòng nhập thuế trong khoảng từ 0 - 100');
+            } else {
+              $.ajax({
+             type: "POST",
+              url: "@Url.Action("Create")",
+              data: CreateHoaDonBill.serialize() ,
+             dataType: "json",
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    toastr.success('Tạo thành công');
+                    $("#modalThem").modal("hide");
+                    $("#CreateHoaDonBill").trigger("reset");
+                    if (msg.resultObj.trangThai == "Đã thanh toán") {
+                        var str = ' <tr '+ msg.resultObj.id + '">'
+                            + ' <td>' + msg.resultObj.maLuuTru + '</td>'
+                            + ' <td>' + msg.resultObj.maKeHoach + '</td>'
+                            + ' <td>' + msg.resultObj.ngayTao + '</td>'
+                            + ' <td>' + msg.resultObj.nguoiTao + '</td>'
+                            + ' <td>' + msg.resultObj.trangThai + '</td>'
+                            + '  <td class="text-center">'
+                            + '<div class="btn-group btn-group-sm">'
+                            + '<a class="btn btn-success" data-toggle="modal" data-target="#modalXem"'
+                            + 'onclick = "XemHoaDon(' + msg.resultObj.id + ')" title = "Xem phiếu nhập hóa đơn">'
+                            + ' <i class="fas fa-eye"></i>'
+                            + '           </a>'
+                                + '     </div>'
+                            + '    </td>'
+                            + ' </tr >';
+
+                        $("#XemThongTinPCBTB1").prepend(str);
+
+                        var text = document.getElementById("SoHDCTT").innerText;
+                        var soLuong = text - 1;
+                        document.getElementById("SoHDCTT").innerHTML = soLuong;
+                    }
+                    else {
+                        DatHangChuaTraTien(" ", " ");
+                    }
+
+                    if (msg.resultObj.trangThaiHoanKH == "1") {
+                        var xoa = "#keHoachDE-" + msg.resultObj.idKeHoach;
+                        $(xoa).remove();
+                    }
+
+                    msg.resultObj.nhacNhoSoLuongs.forEach(function (item) {
+                        // gửi thông điệp
+                        var user = item.nguoiNhan;
+                        var message =
+                        {
+                            Id: item.idThongBao,
+                            Ten: item.ten,
+                            DuongDan: item.duongDan,
+                        };
+                        connectionNhacNho.invoke("SendNhacNho", user, message).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                    });
+
+                } else {
+                    toastr.error(msg.message);
+
+                }
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Tạo thất bại');
+                }
+            });
+
+            }
+        }
+
+        e.preventDefault();
+    });
+</script>

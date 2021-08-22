@@ -1,0 +1,331 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<style>
+    #modalThem {
+        overflow-y: scroll
+    }
+
+    .fc-daygrid-day:hover {
+        background-color: #F8F8FF;
+    }
+
+    .fc-event-main:hover {
+        background-color: palevioletred;
+    }
+</style>
+<!--Modal thêm-->
+<div class="modal fade bd-example-modal-lg" id="modalThem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tạo Kế Hoạch Đặt Hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="card-body pb-0">
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-5 order-2 order-md-1">
+                            <form id="frmTKKHCB" method="get">
+                                <div class="form-group">
+                                    <label for="inputEmail4">Nhóm Nguyên Vật Liệu</label>
+                                    <div id="DeMT">
+                                        <select id="NhomNVL" name="NhomNVL" onchange="TimKiemLoaiNVL()" class="form-control select2bs4" required>
+                                            <option selected>Chọn dữ liệu...</option>
+                                            <option value="0">Nguyên Liệu</option>
+                                            <option value="1">Vật Liệu</option>
+                                            <option value="2">Nhiên Liệu</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEmail4">Loại Nguyên Vật Liệu</label>
+                                    <div id="DeMTType">
+                                        <select id="LoaiNVL" name="LoaiNguyenVatLieu" class="form-control select2bs4" required>
+                                            <option selected>Chọn dữ liệu...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" type="search" style="width:88%; float:left; margin-right:7px;" id="TimKiemNVL"
+                                           placeholder="Tìm kiếm mã số hoặc tên nguyên vật liệu" aria-label="Search">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fas fa-search fa-fw"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>Danh Sách Tìm Kiếm</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="showbodyIdTable">
+                                        <div id="bodyIdTable">
+                                            <table id="example246456" class="table table-bordered table-striped table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Mã Số</th>
+                                                        <th>Tên</th>
+                                                        <th>Số Lượng</th>
+                                                        <th>Trạng Thái</th>
+                                                        <th>Thêm</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="timKiemNVLtable">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--//////////////////////////////////////////////////////////////////////////////////////////////////-->
+                        <div class="col-12 col-md-12 col-lg-7 order-1 order-md-2">
+                            <form id="AddSaveKeHoachDH" method="post">
+                                <input type="hidden" class="form-control" name="IdChiMuc" value="@ViewBag.ChiMuc">
+                                <h3 class="text-primary"><i class="fas fa-paint-brush"></i>Phiếu Kế Hoạch</h3>
+                                <h5 class="mt-5 text-muted"></h5>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="inputEmail4">Mã Số</label>
+                                        <select id="CodeChon" name="MaSo" class="form-control selectMater" required>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="inputEmail4">Tên</label>
+                                        <input type="text" class="form-control" name="Ten" id="Name" placeholder="Tên kế hoạch" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEmail4">Ngày Dự Kiến</label>
+                                    <input type="text" class="form-control" id="NgayKetThucDuKien" name="NgayDuKien" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAddress">Ghi Chú</label>
+                                    <input type="text" class="form-control" name="GhiChu" id="Note" placeholder="Ghi chú">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAddress">Giao Kế Hoạch</label>
+                                    <button type="button" class="form-control" onclick="GiaoViec()"
+                                            data-toggle="modal" data-target="#exampleGiaoViec"
+                                            id="IdResponsible">
+                                        <div id="ShowNVienGV"></div>
+                                    </button>
+                                    @{
+                                        var user = User.Identity.Name;
+                                    }
+                                    <input name="NguoiTao" value="@user" type="hidden" />
+                                    <input name="IdNguoiNhan" id="IdNguoiNhan" type="hidden" />
+                                </div>
+                                <h5 class="mt-5 text-muted">Đã thêm</h5>
+                                <table id="example245" class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã Số</th>
+                                            <th style="width:150px;">ĐVT</th>
+                                            <th>Số Lượng</th>
+                                            <th>Ghi Chú</th>
+                                            @*<th>Nơi Đặt</th>*@
+                                            <th class="text-center">Thao Tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableAddru">
+                                    </tbody>
+                                </table>
+                                <div class="text-center mt-5 mb-3">
+                                    <button class="btn btn-primary">Lưu Lại</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal showw đơn vị tính -->
+<div class="modal fade bd-example-modal-lg" id="exampleViewChuyenDoi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Bảng Chuyển Đổi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail4">ĐVT (cơ bản)</label>
+                        <input id="PackMD" class="form-control" disabled />
+                        <small>Giả sử: 1 ĐVT = 100 ĐVT (cơ bản)</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail4">Số Lượng Nhập</label>
+                        <input id="PackSL" class="form-control" disabled />
+                    </div>
+                </div>
+                <table id="tableNhPack" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ĐVT</th>
+                            <th>Giá Trị</th>
+                            <th>Chuyển Đổi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableNPacketert">
+                    </tbody>
+                </table>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal tìm kiếm nhân viên-->
+<div class="modal fade bd-example-modal-lg" id="exampleGiaoViec" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nhân Viên</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="form-group">
+                    <form id="frmTKNV" method="post">
+                        <input class="form-control" type="search" style="width:93%; float:left; margin-right:7px;" id="TimKiemNV"
+                               placeholder="Tìm kiếm mã số, căn cước công dân, tên nhân viên" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <br />
+                    <h5>Danh Sách Nhân Viên Đang Làm Việc</h5>
+                    <table id="tableNhanVien3" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã Số</th>
+                                <th>Căn Cước Công Dân</th>
+                                <th>Họ</th>
+                                <th>Tên</th>
+                                <th class="text-center">Giao Việc</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableNVIEN">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+     GetCodeKHDH();
+    // Lấy giá trị của mã User
+    function GetCodeKHDH() {
+        var typeMVL = "@MaLoai.KeHoachDatHang";
+
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("GetAll","QuanLyMaSos")",
+             data: {type: typeMVL} ,
+                dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+                    //Code
+                    str = '<option value="' + item.ten +'">'+item.ten+'</option>';
+                    $('#CodeChon').append(str);
+                });
+
+                },
+                error: function (req, status, error) {
+
+                }
+            });
+    }
+
+    var AddSaveKeHoachDH = $("#AddSaveKeHoachDH");
+    AddSaveKeHoachDH.submit(function (e) {
+         var idNguoiNhan = $("#IdNguoiNhan").val();
+        if (arrayThemNguyenVatLieu.length <= 0) {
+            toastr.error('Nguyên vật liệu chưa được thêm');
+        } else {
+            if (idNguoiNhan.length <= 0) {
+                toastr.error('Cần giao kế hoạch cho nhân viên');
+
+            } else {
+             $.ajax({
+                type: "POST",
+                 url: "@Url.Action("Create")",
+                 data: AddSaveKeHoachDH.serialize(),
+                dataType: "json",
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    toastr.success('Tạo kế hoạch thành công');
+                    $("#modalThem").modal("hide");
+                    $("#AddSaveKeHoachDH").trigger("reset");
+                    document.getElementById('ShowNVienGV').innerHTML = "";
+                    $("#IdNguoiNhan").val('');
+                    $('.NguyenVatLieuThemClass').remove();
+                    arrayThemNguyenVatLieu = [];
+                         var ten = msg.resultObj.maSo + ": "+msg.resultObj.ten;
+                    AddEvent({
+                        id: msg.resultObj.id,
+                        title: ten,
+                        extendedProps: {
+                            department: false
+                        },
+                        description:'ChuaHoanThanh',
+                        start: new Date(msg.resultObj.ngayBatDauDuKien),
+                        end: new Date(msg.resultObj.ngayKetThucDuKien),
+                        backgroundColor: '#f39c12',
+                        borderColor: '#f39c12',
+                        allDay: true
+                    });
+
+                    // gửi thông điệp
+                    var user = msg.resultObj.nguoiNhan;
+                    var message =
+                    {
+                        Id: msg.resultObj.idThongBao,
+                        Ten: "Nhận kế hoạch đặt hàng: " + msg.resultObj.maSo ,
+                        DuongDan: "/NhiemVuKeHoachDatHang/Index",
+                    };
+                    connectionDatHang.invoke("SendNhanKeHoachDatHang", user, message).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+                else {
+                    toastr.error(msg.message);
+                }
+                },
+                error: function (req, status, error) {
+                    toastr.error('Tạo kế hoạch thất bại');
+                }
+            });
+            }
+        }
+        e.preventDefault();
+    });
+</script>

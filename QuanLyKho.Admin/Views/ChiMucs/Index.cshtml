@@ -1,0 +1,505 @@
+﻿@using QuanLyKho.ViewModels.Common;
+@model PagedResult<QuanLyKho.ViewModels.ChiMuc.ModelChimuc>
+
+@{ ViewData["Title"] = "Thời Hạn";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6" style="margin-bottom:8px; ">
+                <h1>Thời Hạn</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right" style="margin-bottom:5px;">
+                    <button type="button" class="btn btn-block bg-gradient-success" onclick="SetCheckBox()"
+                            data-toggle="modal" data-target="#modalThem">
+                        <i class="fas fa-plus"></i>
+                        Thêm Dữ Liệu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content" id="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Danh Sách</h3>
+                        <div class="col-md-5" style="float:right;">
+                            <form asp-action="Index" method="get">
+                                <div class="form-group">
+                                    <div class="col-md-9" style="float:left; margin-bottom:5px;">
+                                        <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" placeholder="Vui lòng nhập tên " />
+                                    </div>
+                                    <div class="cold-md-6" style="float:right; ">
+                                        <button type="submit" class="btn btn-primary">Tìm</button>
+                                        <button type="button" onclick="window.location.href='/ChiMucs/Index'" class="btn btn-dark">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Ngày Bắt Đầu</th>
+                                    <th>Ngày Kết Thúc</th>
+                                    <th>Tên</th>
+                                    <th>Số Ngày Làm Việc</th>
+                                    <th>Tình Trạng</th>
+                                    <th class="text-center">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addTR">
+                                @{ int stt = 0;}
+                                @foreach (var item in Model.Items)
+                                {
+                                    stt++;
+                                    <tr id="tr-@Html.DisplayFor(modelItem => item.Id)">
+                                        <td class="text-center">@stt</td>
+                                        <td id="Start-@Html.DisplayFor(modelItem => item.Id)">
+                                            @{ var start = item.NgayBatDau.ToString("dd/MM/yyyy");}
+                                            @start
+                                        </td>
+                                        <td id="End-@Html.DisplayFor(modelItem => item.Id)">
+                                            @{ var end = item.NgayKetThuc.ToString("dd/MM/yyyy");}
+                                            @end
+                                        </td>
+                                        <td id="Name-@Html.DisplayFor(modelItem => item.Id)">
+                                            @Html.DisplayFor(modelItem => item.Ten)
+                                        </td>
+                                        <td id="SNLV-@Html.DisplayFor(modelItem => item.Id)" class="text-center">
+                                            @Html.DisplayFor(modelItem => item.SoNgayLamViec)
+                                        </td>
+                                        <td id="Status-@Html.DisplayFor(modelItem => item.Id)">
+                                            @if (item.TrangThaiNgay == "Đang sử dụng")
+                                            {<p style="color:red">
+                                                    @Html.DisplayFor(modelItem => item.TrangThaiNgay)
+                                                </p> }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => item.TrangThaiNgay)}
+                                        </td>
+                                        <td class="text-center py-0 align-middle">
+
+                                            <div class="btn-group btn-group-sm">
+                                                @*<a class="btn btn-success" data-toggle="modal" data-target="#exampleView"
+                                                       onclick="GetView('@item.Id')" title="Xem">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>*@
+                                                <a class="btn btn-primary" data-toggle="modal" data-target="#exampleEdit"
+                                                   onclick="GetEdit('@item.Id')" title="Sửa">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                <a class="btn btn-danger" data-toggle="modal" data-target="#exampleDelete"
+                                                   onclick="GetDelete('@item.Id')" title="Xóa">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <br />
+                        @await Component.InvokeAsync("Pager", Model)
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+@await Html.PartialAsync("XemNgayNghi")
+<!--Modal thêm-->
+<div class="modal fade" id="modalThem" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thời Hạn</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="formaddCM" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tên</label>
+                        <input type="text" id="Name" class="form-control" placeholder="Tên" disabled>
+                        <input type="hidden" id="NameHidden" name="Ten" class="form-control" placeholder="Tên">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">Ngày</label>
+                        <input type="text" class="form-control" id="Date" name="Ngay" onchange="CapNhatTen()">
+                    </div>
+                    <label class="control-label">Ngày Nghỉ Làm Việc</label>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox2" name="NgayNghiMacDinh" value="2">
+                        <label for="customCheckbox2" class="custom-control-label" style="font-weight:normal;">Thứ Hai</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox3" name="NgayNghiMacDinh" value="3">
+                        <label for="customCheckbox3" class="custom-control-label" style="font-weight:normal;">Thứ Ba</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox4" name="NgayNghiMacDinh" value="4">
+                        <label for="customCheckbox4" class="custom-control-label" style="font-weight:normal;">Thứ Tư</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox5" name="NgayNghiMacDinh" value="5">
+                        <label for="customCheckbox5" class="custom-control-label" style="font-weight:normal;">Thứ Năm</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox6" name="NgayNghiMacDinh" value="6">
+                        <label for="customCheckbox6" class="custom-control-label" style="font-weight:normal;">Thứ Sáu</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox7" name="NgayNghiMacDinh" value="7">
+                        <label for="customCheckbox7" class="custom-control-label" style="font-weight:normal;">Thứ Bảy</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox1" name="NgayNghiMacDinh" value="1" checked>
+                        <label for="customCheckbox1" class="custom-control-label" style="font-weight:normal;">Chủ Nhật</label>
+                    </div>
+                    <div class="form-group" style="margin-top:8px;" id="btnthemNgay">
+                        <button type="button" onclick="ThemNgayNghi()" class="btn btn-success btn-sm">Thêm Ngày Nghỉ</button>
+                    </div>
+                    <div id="ShowNgayNghi">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" id="btnthem" class="btn btn-primary">Lưu Lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Modal sửa-->
+<div class="modal fade" id="exampleEdit" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thời Hạn</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="frmEdit" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="idE" name="Id" />
+                    <div class="form-group">
+                        <label>Tên</label>
+                        <input type="text" pattern="([A-Za-z]).{1,149}" title="Vui lòng nhập không quá 150 chữ"
+                               id="NameE" name="Ten"
+                               class="form-control" placeholder="Tên" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">Ngày</label>
+                        <input type="text" class="form-control" id="DateE" name="Ngay" disabled>
+                    </div>
+                    <label class="control-label">Ngày Nghỉ Làm Việc</label>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckboxEdit2" name="NgayNghiMacDinhCapNhat" value="2">
+                        <label for="customCheckboxEdit2" class="custom-control-label" style="font-weight:normal;">Thứ Hai</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckboxEdit3" name="NgayNghiMacDinhCapNhat" value="3">
+                        <label for="customCheckboxEdit3" class="custom-control-label" style="font-weight:normal;">Thứ Ba</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckboxEdit4" name="NgayNghiMacDinhCapNhat" value="4">
+                        <label for="customCheckboxEdit4" class="custom-control-label" style="font-weight:normal;">Thứ Tư</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckboxEdit5" name="NgayNghiMacDinhCapNhat" value="5">
+                        <label for="customCheckboxEdit5" class="custom-control-label" style="font-weight:normal;">Thứ Năm</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckboxEdit6" name="NgayNghiMacDinhCapNhat" value="6">
+                        <label for="customCheckboxEdit6" class="custom-control-label" style="font-weight:normal;">Thứ Sáu</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckboxEdit7" name="NgayNghiMacDinhCapNhat" value="7">
+                        <label for="customCheckboxEdit7" class="custom-control-label" style="font-weight:normal;">Thứ Bảy</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckboxEdit1" name="NgayNghiMacDinhCapNhat" value="1">
+                        <label for="customCheckboxEdit1" class="custom-control-label" style="font-weight:normal;">Chủ Nhật</label>
+                    </div>
+                    <label class="control-label" style="margin-top:10px;">Ngày Nghỉ Tự Chọn</label>
+                    <div id="ShowNgayNghiEditDelete">
+                        <div id="ShowNgayNghiEditDB">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:8px;" id="btnthemNgay">
+                        <button type="button" onclick="ThemNgayNghiEdit()" class="btn btn-success btn-sm">Thêm Ngày Nghỉ</button>
+                    </div>
+                    <div id="ShowNgayNghiNhapDelete">
+                        <div id="ShowNgayNghiEdit">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" id="btnedit" onclick="SaveEdit()" class="btn btn-primary">Lưu Lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--Modal xóa-->
+<div class="modal fade" id="exampleDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thời Hạn</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDelete" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn xóa dữ liệu đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDelete()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal xóa ngày nghỉ-->
+<div class="modal fade" id="exampleDeleteNgayNghi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thời Hạn</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDeleteNgayNghi" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn xóa dữ liệu đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDeleteNgayNghi()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/ui/ChiMucController/ChiMucController.js"></script>
+<script>
+    // xóa ngày nghỉ cập nhật
+    function ajaxDeleteNgayNghi() {
+        var id = $("#idDeleteNgayNghi").val();
+         $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("DeleteNgayNghi")",
+            data: { id: id },
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    $("#exampleDeleteNgayNghi").modal("hide");
+                    toastr.success("Xóa thành công");
+                    var str = "#divNgayNghiDB-" + id;
+                    $(str).remove();
+                    var strngayNghi = "SNLV-" + msg.resultObj.id;
+                    var node = document.getElementById(strngayNghi);
+                    node.innerHTML = msg.resultObj.soNgayLamViec;
+                } else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (data) {
+                toastr.error('Xóa thất bại')
+            }
+        });
+    }
+    // thêm chỉ mục
+    var frm = $('#formaddCM');
+    frm.submit(function (e) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Create")",
+            data: frm.serialize(),
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    toastr.success("Thêm thành công");
+                    var ngayBD = new Date(msg.resultObj.ngayBatDau);
+                    var ngayKT = new Date(msg.resultObj.ngayKetThuc);
+                    var ngayBatDau = ngayBD.getDay() + '/' + ngayBD.getMonth() + '/' + ngayBD.getFullYear();
+                    var ngayKetThuc = ngayKT.getDay() + '/' + ngayKT.getMonth() + '/' + ngayKT.getFullYear();
+                    $("#modalThem").modal("hide");
+                    SetCheckBox();
+                   // location.reload();
+                    var str = '<tr id ="tr-' + msg.resultObj.id + '">'
+                        + '<td class="text-center">_</td> <td id="Start-' + msg.resultObj.id + '">'
+                        + msg.resultObj.ngayBatDauFormat
+                        + '  </td>'
+                        + '  <td id="End-' + msg.resultObj.id + '">'
+                        + msg.resultObj.ngayKetThucFormat
+                        + '   </td>'
+                        + '  <td id="Name-' + msg.resultObj.id + '">'
+                        +msg.resultObj.ten
+                        + '   </td>'
+                        + '<td id="SNLV-' + msg.resultObj.id + '" class="text-center">' + msg.resultObj.soNgayLamViec + '</td>'
+                        + '   <td id="Status-' + msg.resultObj.id + '">';
+
+                    if (msg.resultObj.trangThaiNgay == "Đang sử dụng")
+                    {
+                        str = str +'<p style="color:red">' + msg.resultObj.trangThaiNgay+'</p>';
+                    }
+                      else
+                    {
+                        str = str + msg.resultObj.trangThaiNgay;
+                    }
+                   str =   str       +'   </td> '
+                                                +'  <td class="text-center py-0 align-middle">'
+                                                +'    <div class="btn-group btn-group-sm">'
+                                                //+'<a class="btn btn-success" data-toggle="modal" data-target="#exampleView"'
+                                                //+'  onclick="GetView('+msg.resultObj.id+')" title="Xem">'
+                                                //+'  <i class="fas fa-eye"></i>'
+                                                //+'  </a>'
+                                                +'       <a class="btn btn-primary" data-toggle="modal" data-target="#exampleEdit"'
+                                                +'     onclick="GetEdit('+msg.resultObj.id+')" title="Sửa">'
+                                                +'     <i class="fas fa-pencil-alt"></i>'
+                                                +'  </a>'
+                                                +'  <a class="btn btn-danger" data-toggle="modal" data-target="#exampleDelete"'
+                                                +'    onclick="GetDelete('+msg.resultObj.id+')" title="Xóa">'
+                                                +'     <i class="fas fa-trash"></i>'
+                                                +' </a>'
+                                                +'   </div>'
+                        + ' </td>';
+
+                    $("#addTR").prepend(str);
+                } else {
+                    if (msg.message != null) {
+                        toastr.error(msg.message);
+                    } else {
+                        toastr.error('Thêm thất bại')
+                    }
+                }
+            },
+            error: function (data) {
+                toastr.error('Thêm thất bại')
+            }
+        });
+        e.preventDefault();
+    });
+
+    // xóa chỉ mục
+    function ajaxDelete() {
+        var id = $("#idDelete").val();
+        $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("Delete")",
+            data: { id: id },
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    $("#exampleDelete").modal("hide");
+                    var str = "#tr-" + id;
+                    $(str).remove();
+                    toastr.success("Xóa thành công");
+                } else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (data) {
+                toastr.error('Xóa thất bại')
+            }
+        });
+    }
+
+    // sửa : lấy giá trị
+    function GetEdit(id) {
+    $('#DateE').daterangepicker({
+        opens: 'left'
+    }, function (start, end, label) {
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+        SetCheckBoxEditFalse();
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("GetChiMucTheoId")",
+        data: { id: id },
+        success: function (msg) {
+            $("#idE").val(id);
+            $("#NameE").val(msg.resultObj.ten);
+
+            $("#ShowNgayNghiEdit").remove();
+            $("#ShowNgayNghiNhapDelete").append('<div id="ShowNgayNghiEdit"> </div>');
+
+            var date = msg.resultObj.ngayBatDau + " - " + msg.resultObj.ngayKetThuc;
+            $("#DateE").val(date);
+
+                msg.resultObj.ngayNghiMacDinh.forEach(function (item) {
+                    if (item != "") {
+                        var idText = "customCheckboxEdit" + item;
+                        document.getElementById(idText).checked = true;
+                    }
+                });
+            $("#ShowNgayNghiEditDB").remove();
+            $("#ShowNgayNghiEditDelete").append('<div id="ShowNgayNghiEditDB"> </div>');
+            msg.resultObj.ngayNghiTuChon.forEach(function (item) {
+                if (item != "") {
+                    ThemNgayNghiDatabase(item.id, item.ngay);
+                }
+            });
+        },
+        error: function (data) {
+        }
+    });
+    }
+
+    // lưu sửa
+    var frmEdit = $("#frmEdit");
+    frmEdit.submit(function (e) {
+        $.ajax({
+            type: "PUT",
+            url: "@Url.Action("Update")",
+            data: frmEdit.serialize(),
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    $("#exampleEdit").modal("hide");
+                    toastr.success("Cập nhật thành công");
+                    var str = "SNLV-" + msg.resultObj.id;
+                    var node = document.getElementById(str);
+                        node.innerHTML = msg.resultObj.soNgayLamViec;
+                } else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (data) {
+                toastr.error('Cập nhật thất bại')
+            }
+        });
+        e.preventDefault();
+    });
+</script> 

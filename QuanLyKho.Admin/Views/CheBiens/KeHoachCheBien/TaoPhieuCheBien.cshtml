@@ -1,0 +1,154 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<style>
+    #modalThem {
+        overflow-y: scroll
+    }
+</style>
+<!--Modal thêm-->
+<div class="modal fade bd-example-modal-lg" id="modalThem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tạo Phiếu Chế Biến</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <form id="CreatePhieuCheBien" method="post">
+
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Mã Lưu Trữ</label>
+                            <select id="Code" name="MaSo" class="form-control" required>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Mã Kế Hoạch</label>
+                            <input type="hidden" class="form-control" name="IdKeHoach" id="IdPlan" required>
+                            <input type="text" class="form-control" name="MaKeHoach" id="CodeOrder" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row" id="tableRow">
+                        <div class="col-12">
+                            <h5>Danh Sách Nguyên Vật Liệu</h5>
+                        </div>
+                        <input type="hidden" class="form-control" name="IdChiMuc" value="@ViewBag.ChiMuc">
+                        <input name="NguoiTao" type="hidden" value="@User.Identity.Name" />
+                        <table id="DeleteTableNVLcc" class="table table-bordered table-striped table-hover table-responsive-xl">
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary" id="TaoPhieuBTN">Lưu Lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    // lấy mã code lưu trữ
+    GetCodeCheBien();
+    // Lấy giá trị của mã User
+    function GetCodeCheBien() {
+        var typeMVL = "@MaLoai.PhieuCheBien";
+         $.ajax({
+             type: "GET",
+              url: "@Url.Action("GetAll","QuanLyMaSos")",
+             data: {type: typeMVL} ,
+             dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+                    //Code
+                    str = '<option value="' + item.ten +'">'+item.ten+'</option>';
+                    $('#Code').append(str);
+                });
+
+                },
+                error: function (req, status, error) {
+
+                }
+            });
+    }
+
+    // tạo phiếu chế biến
+    var CreatePhieuCheBien = $("#CreatePhieuCheBien");
+    CreatePhieuCheBien.submit(function (e) {
+        if (arrayQuaTon.length!=0) {
+            toastr.error('Nguyên vật liệu đã vượt mức tồn');
+        } else {
+             $.ajax({
+             type: "POST",
+                 url: "@Url.Action("Create")",
+                 data: CreatePhieuCheBien.serialize(),
+             dataType: "json",
+                 success: function (msg) {
+
+                     if (msg.isSuccessed) {
+                         $("#modalThem").modal("hide");
+                         arrayQuaTon = [];
+                         toastr.success("Tạo thành công");
+                         if (msg.resultObj.giaTri) {
+                             var str = "#keHoachDE-" + msg.resultObj.idKeHoach;
+                             $(str).remove();
+                             var text = document.getElementById("SoHDCTT").innerText;
+                             var soLuong = text - 1;
+                             document.getElementById("SoHDCTT").innerHTML = soLuong;                           
+                         }
+
+                         var textCB = document.getElementById("PhieuCountCho").innerText;
+                         var soLuongCB = textCB - 0 + 1;
+                         document.getElementById("PhieuCountCho").innerHTML = soLuongCB;
+
+                         var strChuoi = ' <tr class="delete-phieuCho" id="phieuChoDE-' + msg.resultObj.id + '">'
+                             + '<td>' + msg.resultObj.maPhieu + '</td>'
+                             + '<td>' + msg.resultObj.maKeHoach + '</td>'
+                             + '<td>' + msg.resultObj.ngayTao + '</td>'
+                             + '<td>' + msg.resultObj.nguoiTao + '</td>'
+                             + '<td>' + msg.resultObj.nguoiNhan + '</td>'
+                             + '<td class="text-center">'
+                             + '<div class="btn-group btn-group-sm">'
+                             + '          <a class="btn btn-primary" data-toggle="modal" data-target="#modalCapNhat"'
+                             + '              onclick="CapNhatPhieuChoCb(' + msg.resultObj.id + ',\'' + msg.resultObj.maPhieu + '\')" title="Phiếu chế biến hoàn thành">'
+                             + '               <i class="fas fa-check"></i>'
+                             + '           </a>'
+                             + '           <a class="btn btn-success" data-toggle="modal" data-target="#xemthongtinPhIEUcb"'
+                             + '               onclick="XemPhieuCheBien(' + msg.resultObj.id + ')" title="Xem phiếu chế biến">'
+                             + '                <i class="fas fa-eye"></i>'
+                             + '            </a>'
+                             + '            <a class="btn btn-danger" data-toggle="modal" data-target="#modalHuyPhieu"'
+                             + '               onclick="HuyPhieuCheBien(' + msg.resultObj.id + ',\'' + msg.resultObj.maPhieu + '\')" title="Hủy Phiếu Chế Biến">'
+                             + '               <i class="fas fa-ban"></i>'
+                             + '            </a>'
+                             + '        </div>'
+                             + '    </td>'
+                             + '</tr>';
+                         $("#phieuChoCB").prepend(strChuoi);
+
+                         // gửi thông điệp
+                         var user = msg.resultObj.userName;
+                         var message =
+                         {
+                             Id: msg.resultObj.idThongBao,
+                             Ten: "Nhận phiếu chế biến: " + msg.resultObj.maPhieu,
+                             DuongDan: "/NhiemVuPhieuCheBien/Index",
+                         };
+                         connectionPhieuCheBien.invoke("SendPhieuCheBien", user, message).catch(function (err) {
+                             return console.error(err.toString());
+                         });
+                     } else {
+                         toastr.error(msg.message);
+                     }
+
+                },
+                error: function (req, status, error) {
+                    toastr.error("Tạo thất bại");
+                }
+            });
+        }
+        e.preventDefault();
+    });
+</script>

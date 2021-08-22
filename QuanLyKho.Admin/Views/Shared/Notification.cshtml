@@ -1,0 +1,124 @@
+﻿<!--Show thông báo-->
+<script>
+
+    //<a href='/ProcessPlans/Index'>Chọn</a>
+   // var lanDau = 0;
+    var name = '@User.Identity.Name';
+    document.getElementById("SoThongBao").style.display = "none";
+    GetShowNotification(name);
+
+    function GetShowNotification(name) {
+        DeleteShowNotification();
+        $.ajax({
+            type: "GET",
+             url: "@Url.Action("GetFiveNotifications","Notifications")",
+             data: { name: name },
+            dataType: "json",
+              success: function (data) {
+                  if (data.length < 1) {
+                      // rỗng
+                      document.getElementById("SoThongBao").style.display = "none";
+
+                  }
+                  else {
+                       data.forEach(function (item) {
+                      var str = '<div class="dropdown-divider"></div>'
+                         + '<a href = "'+item.path+'" class="dropdown-item" onclick="SaveViewNoti('+item.id+')">'
+                          + '<i class="fas fa-briefcase mr-2"></i>'
+                          +item.name
+                             +     '<small class="float-right text-muted text-sm" > '+item.view+'</small>'
+                      +' </a>';
+                      $("#ShowThongBaoNhan").append(str);
+                      if (item.count == 0) {
+                          document.getElementById("SoThongBao").style.display = "none";
+
+                      } else {
+
+                          document.getElementById("SoThongBao").style.display = "block";
+                      }
+                           document.getElementById("SoThongBao").innerHTML = item.count;
+                           document.getElementById("CountThongBao").innerHTML = item.count + " Tin Chưa Xem";
+                  });
+
+                  //        //var audio = new Audio('/sound/Tieng-ting.mp3');
+                  //        //audio.play();
+                  }
+
+            }
+        });
+
+    }
+
+    function DeleteShowNotification() {
+        $("#ShowThongBaoNhan").remove();
+        $("#ThongBaoNhan").append('<div id="ShowThongBaoNhan"></div>');
+    }
+</script>
+
+<!--Lưu thông báo-->
+<script>
+    function CreateNotification(content, path, user, message) {
+        var bundle =
+        {
+            Name: content,
+            Path: path,
+            NameReceiver: user
+        }
+
+        $.ajax({
+            type: "Post",
+             url: "@Url.Action("Create", "Notifications")",
+             data: bundle,
+            dataType: "json",
+              success: function (data) {
+                  connection.invoke("SendMessage", user, message).catch(function (err) {
+                      return console.error(err.toString());
+                  });
+            }
+        });
+
+    }
+
+    function SaveViewNoti(id) {
+        var bundle =
+        {
+            Id:id
+        }
+         $.ajax({
+            type: "Put",
+             url: "@Url.Action("Update", "Notifications")",
+             data: bundle,
+            dataType: "json",
+              success: function (data) {
+                     var name = '@User.Identity.Name';
+        GetShowNotification(name);
+            }
+        });
+    }
+
+    function ShowResetTB() {
+        var name = '@User.Identity.Name';
+        GetShowNotification(name);
+    }
+</script>
+<!--signlR-->
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
+<script>
+    "use strict";
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+    connection.on("ReceiveMessage", function (user, message) {
+        var name = "@User.Identity.Name";
+        if (user == name) {
+            GetShowNotification(name);
+        }
+    });
+
+    // khởi động
+    connection.start().then(function () {
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+</script>

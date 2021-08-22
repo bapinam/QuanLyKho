@@ -1,0 +1,231 @@
+﻿<section class="content">
+    <!-- Default box -->
+    <div class="card collapsed-box">
+        <div class="card-header">
+            <h3 class="card-title">Danh Sách Kế Hoạch Đang Chờ Nhập Hóa Đơn</h3>
+
+            <div class="card-tools">
+                <span title="Kế Hoạch Đặt Hàng" data-toggle="tooltip" data-placement="top" class="badge badge-warning" id="SoHDCTT" style="float:left;">
+                </span>
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body" style="display: none;">
+
+            <form id="frmTKKH" method="get">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="NgayTKKH" name="ngayDuKien" placeholder="Chọn ngày dự kiến">
+                                        <div class="input-group-append">
+                                            <button type="button" onclick="resetLaiNgayTKKH()" class="btn btn-default" title="Không tìm kiếm theo ngày">
+                                                <i class="fa fa-refresh"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" name="tuKhoa" id="tuKhoaTKKH"
+                                               placeholder="Nhập mã số hoặc tên kế hoạch">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default" title="Tìm kiếm kế hoạch chế biến">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <table id="example25656" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã Số</th>
+                        <th>Tên</th>
+                        <th>Ngày Tạo</th>
+                        <th>Người Tạo</th>
+                        <th>Người Nhận</th>
+                        <th>Trạng Thái</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="phanPhoiTableShow">
+                    <tr class="delete-kehoach text-center">
+                        <td colspan="7">Không tìm thấy dữ liệu</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <!-- /.card -->
+</section>
+<!-- xem hóa đơn -->
+<!--Modal-->
+<div class="modal fade bd-example-modal-lg" id="modalXem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xem Phiếu Chế Biến</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="form-row">
+                    <input type="hidden" id="idKeHoachXem" />
+                    <div class="form-group col-md-6">
+                        <label>Mã Lưu Trữ:</label>
+                        <span class="form-control" id="maLuuTruDH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Mã Kế Hoạch:</label>
+                        <span class="form-control" id="maKHDH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <input type="hidden" id="idKeHoachXem" />
+                    <div class="form-group col-md-6">
+                        <label>Số Hóa Đơn:</label>
+                        <span class="form-control" id="soHoaDonDH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Người Tạo:</label>
+                        <span class="form-control" id="nguoiTaoDH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Ngày Tạo:</label>
+                        <span class="form-control" id="ngayTaoDH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Ngày Mua:</label>
+                        <span class="form-control" id="ngayMuaDH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Trạng Thái:</label>
+                        <span class="form-control" id="trangThaiDH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Nhà Cung Cấp:</label>
+                        <span class="form-control" id="nhaCungCapDH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <label>
+                        Danh Sách Đặt Hàng
+                    </label>
+                    <table id="tableShowViewKH12" class="table table-bordered table-striped table-hover table-responsive-xl">
+                        <thead>
+                            <tr>
+                                <th>Mã Số</th>
+                                <th>Tên Nguyên Vật Liệu</th>
+                                <th>ĐVT</th>
+                                <th>Số Lượng</th>
+                                <th>Đơn Giá</th>
+                                <th>Giảm Giá</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ShowViewKH12DH">
+                        </tbody>
+                    </table>
+                    <label style="float:right; margin-top: 20px;" id="TongTien"></label>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal xem danh sách đặt hàng-->
+<div class="modal fade bd-example-modal-lg" id="HuyKeHoachDatHang" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xem Danh Sách Đặt Hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="card-body">
+                    <label>
+                        Danh Sách Đặt Hàng
+                    </label>
+                    <table id="tableShowViewKH12" class="table table-bordered table-striped table-hover table-responsive-xl">
+                        <thead>
+                            <tr>
+                                <th>Mã Số</th>
+                                <th>Nguyên Vật Liệu</th>
+                                <th>Số Lượng</th>
+                                <th>Số Lượng Đã Thêm</th>
+                                <th>ĐVT</th>
+                                <th class="text-center">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ShowViewHuyKeHoachDatHang">
+                        </tbody>
+                    </table>
+                    <label style="float:right; margin-top: 20px;" id="TongTien"></label>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal hủy phiếu -->
+<div class="modal fade" id="modalHoiHuyDatHang" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hủy Phiếu Đặt Hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idHoiHuyDatHang" />
+                <input type="hidden" id="idKeHoachDHHuy" />
+
+                <h5 class="modal-title">
+                    Bạn có muốn hủy chi tiết đặt hàng này không ?
+                </h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxHuyDatHang()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>

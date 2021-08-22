@@ -1,0 +1,335 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<div class="card direct-chat direct-chat-primary table-hover12">
+    <div class="card-header">
+        <h3 class="card-title">Loại Nguyên Vật Liệu</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body" style="display:none;">
+        <div class="modal-body">
+            <form id="FormNhomNVL" method="post">
+                <div class="form-row">
+                    <input type="hidden" id="TypeNhomNVL" name="MaLoai" value="@MaLoai.LoaiNguyenVatLieu" />
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenNhomNVL"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeNhomNVL()" required>
+                    </div>
+                    <span class="text-danger" id="showTenNhomNVL">
+                        Tên mã đã tồn tại
+                    </span>
+                    <div class="form-group col-md-6">
+                        <button type="submit" id="btnthemNhomNVL" class="btn btn-primary">Thêm Vào</button>
+                    </div>
+                    <small>Tên mã + số tự tăng: CODE1</small>
+                </div>
+            </form>
+        </div>
+        <div class="modal-body">
+            <table id="NhomNVLtable" class="table table-bordered ">
+                <thead>
+                    <tr>
+                        <th>Tên Mã</th>
+                        <th class="text-center">Ưu Tiên</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="addNhomNVL">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--Modal xóa-->
+<div class="modal fade" id="exampleDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDelete" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn xóa dữ liệu đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDelete()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Sửa-->
+<div class="modal fade" id="exampleEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idEdit" />
+                <input type="hidden" id="MaLoaiNhomNVL" value="@MaLoai.LoaiNguyenVatLieu" />
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenNhomNVLEdit"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeNhomNVLEdit()" disabled>
+                        <span class="text-danger" id="erroGroupNhomNVL">
+                            Tên đã tồn tại
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" name="DinhDau" id="DinhDauEdit">
+                            <option value="true">Bật</option>
+                            <option value="false">Tắt</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxSave()" id="btnEditNhomNVL" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Loại Nguyên Vật Liệu-->
+<script>
+    //kiểm tra tên
+    document.getElementById('showTenNhomNVL').style.display = "none";
+    function iCodeNhomNVL()
+    {
+        var nameSP = $('#TenNhomNVL').val().trim();
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameSP} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('showTenNhomNVL').style.display = "none";
+                    document.getElementById('btnthemNhomNVL').style.display = "block";
+                } else {
+                    document.getElementById('showTenNhomNVL').style.display = "block";
+                    document.getElementById('btnthemNhomNVL').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('showTenNhomNVL').style.display = "block";
+                    document.getElementById('btnthemNhomNVL').style.display = "none";
+
+                }
+            });
+    }
+
+    document.getElementById('erroGroupNhomNVL').style.display = "none";
+    document.getElementById('btnEditNhomNVL').style.display = "block";
+
+    function iCodeNhomNVLEdit()
+    {
+        var nameSP1 = $('#TenNhomNVLEdit').val().trim();
+        var id = $('#idEdit').val().trim();
+        $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameSP1, id: id} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('erroGroupNhomNVL').style.display = "none";
+                    document.getElementById('btnEditNhomNVL').style.display = "block";
+                } else {
+                    document.getElementById('erroGroupNhomNVL').style.display = "block";
+                    document.getElementById('btnEditNhomNVL').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('erroGroupNhomNVL').style.display = "block";
+                 document.getElementById('btnEditNhomNVL').style.display = "none";
+
+                }
+            });
+    }
+    //
+   GetNhomNVL();
+    // Lấy giá trị của mã NhomNVL
+    function GetNhomNVL() {
+        var typeMVL = $("#TypeNhomNVL").val();
+
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("GetAll")",
+             data: {type: typeMVL} ,
+                dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+
+                    var str = '<tr id="NhomNVL-' + item.id +'">' +
+                        '<td>' + item.ten + '</td>' +
+                        '<td>' +
+                        '<select class="form-control select2bs4" >';
+
+                    if (item.dinhDau) {
+                        str = str + '      <option  value="true">Bật</option>' ;
+                    } else {
+                        str = str + '      <option  value="false">Tắt</option>';
+                    }
+
+                    str = str + ' </select>' +
+                        '</td>' +
+                        '<td class="text-center py-0 align-middle">' +
+                        '<div class="btn-group btn-group-sm">' +
+                        '<a class="btn btn-primary" data-toggle="modal" data-target="#exampleEdit"' +
+                        '   onclick="GetEditNhomNVL(' + item.id + ', \'' + item.ten + '\',' + item.dinhDau +')" title="Sửa">' +
+                        '   <i class="fas fa-pencil-alt"></i>' +
+                        '</a>' +
+                        '<a class="btn btn-danger" data-toggle="modal" data-target="#exampleDelete"' +
+                        '   onclick="GetDeleteNhomNVL(' + item.id + ')" title="Xóa">' +
+                        '    <i class="fas fa-trash"></i>' +
+                        ' </a>' +
+                        '</div>' +
+                        ' </td>' +
+                        ' </tr >';
+                    $('#addNhomNVL').append(str);
+                });
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Thêm thất bại')
+
+                }
+            });
+    }
+
+    // Thêm : btnthemNhomNVL,TenNhomNVL
+    var formNhomNVL = $('#FormNhomNVL');
+    formNhomNVL.submit(function (e) {
+        var nameSP = $('#TenNhomNVL').val().trim();
+        if (nameSP.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (nameSP.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Create")",
+                    data: formNhomNVL.serialize(),
+                    dataType: "json",
+                    success: function (msg) {
+                        toastr.success('Thêm thành công')
+
+                        $('#addNhomNVL').remove();
+                        $('#NhomNVLtable').append('<tbody id="addNhomNVL"></tbody>');
+                        GetNhomNVL();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Thêm thất bại')
+
+                    }
+                });
+            }
+        }
+        e.preventDefault();
+    });
+
+    // xóa
+    function GetDeleteNhomNVL(id) {
+        $("#idDelete").val(id);
+    }
+
+    function ajaxDelete() {
+        var id = $("#idDelete").val();
+        $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("Delete")",
+            data: {id:id},
+                dataType: "json",
+            success: function (msg) {
+                 if (msg.isSuccessed) {
+                     $('#exampleDelete').modal("hide")
+                     toastr.success('Xóa thành công')
+                     var de = "#NhomNVL-" + id;
+                     $(de).remove();
+                 } else {
+                     toastr.error('Xóa thất bại')
+                 }
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Xóa thất bại')
+
+                }
+            });
+    }
+
+    // CẬP nhật
+    function GetEditNhomNVL(id, name, top) {
+        document.getElementById('erroGroupNhomNVL').style.display = "none";
+        document.getElementById('btnEditNhomNVL').style.display = "block";
+        $("#idEdit").val(id);
+        $("#TenNhomNVLEdit").val(name);
+        if (top) {
+            $("#DinhDauEdit").val("true");
+        } else {
+            $("#DinhDauEdit").val("false");
+        }
+    }
+
+    function ajaxSave() {
+        var id = $("#idEdit").val();
+        var name = $("#TenNhomNVLEdit").val();
+        var top = $("#DinhDauEdit").val();
+        var type = $("#MaLoaiNhomNVL").val();
+        if (name.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (name.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                var data =
+                {
+                    Id: id,
+                    Ten: name,
+                    DinhDau: top,
+                    MaLoai: type
+                };
+                $.ajax({
+                    type: "PUT",
+                    url: "@Url.Action("Update")",
+                    data: data,
+                    dataType: "json",
+                    success: function (msg) {
+                        $('#exampleEdit').modal("hide")
+                        toastr.success('Cập nhật thành công');
+                        $('#addNhomNVL').remove();
+                        $('#NhomNVLtable').append('<tbody id="addNhomNVL"></tbody>');
+                        GetNhomNVL();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Cập nhật thất bại');
+
+                    }
+                });
+            }
+        }
+    }
+</script>

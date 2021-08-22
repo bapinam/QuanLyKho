@@ -1,0 +1,475 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<!--Modal đơn vị tính-->
+<div class="modal fade bd-example-modal-lg" id="examplePack" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Đơn Vị Tính</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inputEmail4" style="float:left; margin-right:5px;">Tên Đơn Vị Tính (cơ bản)</label>
+                    <a id="EditDG" class="btn btn-primary btn-sm" style="float:left;"
+                       onclick="GetEditDG()" title="Sửa">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a id="SaveDG" class="btn btn-success btn-sm" style="float:left;"
+                       onclick="GetSaveDG()" title="Lưu">
+                        <i class="fas fa-check"></i>
+                    </a>
+                    <input type="text" class="form-control" id="PackShowDG" value="name" readonly>
+                    <input type="hidden" id="idDVTCB" />
+                    <input type="hidden" id="idSPDVT" />
+                    <input type="text" class="form-control" id="PackDefaultDG" name="PackDefault" onkeyup="CheckNameDG()" required>
+                    <span class="text-danger" id="ShowEnterT">Tên đơn vị tính đã tồn tại</span>
+                </div>
+                <div class="form-group">
+                    <hr />
+                    <!--Show ĐG-->
+                    <table class="table table-bordered table-striped" id="tableDG">
+                        <tbody id="dgTR">
+                        </tbody>
+                    </table>
+                </div>
+                <br />
+                <!--Thêm ĐG-->
+                <button type="button" onclick="MoRong()" class="btn btn-success btn-sm" autocomplete="false">Thêm Đơn Vị Tính</button>
+                <form id="FormAddDongGoi" method="post">
+                    <input type="hidden" id="IdDG" name="IdThem" />
+                    <input type="hidden" name="LoaiDongGoi" value="@LoaiDongGoi.SanPham" />
+                    <div class="form-row" id="AddDongGoi">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Tên Đơn Vị Tính</label>
+                            <input type="text" id="NameDGShowThem" class="form-control" name="Ten"
+                                   onkeyup="CheckNameDongGoiThem()" placeholder="Tên đơn vị tính" required>
+                            <span class="text-danger" id="ShowTenDongGoi">Tên đơn vị tính đã tồn tại</span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Giá Trị Chuyển Đổi</label>
+                            <input type="number" id="ValueDGShow" name="GiaTriChuyenDoi" min="0" max="999999999999" class="form-control"
+                                   placeholder="Giá trị chuyển đổi" required>
+                        </div>
+                    </div>
+                    <div style="float:right;">
+                        <button type="button" onclick="ThuGon()" class="btn btn-secondary btn-sm">Thu Gọn</button>
+                        <button type="submit" id="btn-dg" class="btn btn-primary btn-sm" style="float:right; margin-left:5px">Lưu Lại</button>
+                    </div>
+                </form>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal xóa đơn vị tính-->
+<div class="modal fade" id="dgDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Đơn Vị Tính</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDeDG" />
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Bạn có muốn xóa dữ liệu đã chọn?
+                </h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="donggoiDelete()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal hỏi cập nhật đơn vị tính-->
+<div class="modal fade" id="dgUpdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Đơn Vị Tính</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idUpDG" />
+                <input type="hidden" id="nameUpDG" />
+                <input type="hidden" id="valueUpDG" />
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Bạn có muốn cập nhật dữ liệu đã chọn?
+                </h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="donggoiUp()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal nhắc nhở-->
+<div class="modal fade bd-example-modal-lg" id="exampleNhacNho" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nhắc Nhở</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <form id="formRe" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="idNhacNho" />
+                    <div id="showNN">
+                        <div id="showNNPhan2">
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn bg-olive active">
+                                    <input type="radio" name="NhacNho" class="updateNhacNho" id="optionUpdate_a1" onclick="OnReUpdate()" value="true" autocomplete="off" checked> Bật
+                                </label>
+                                <label class="btn bg-olive">
+                                    <input type="radio" name="NhacNho" class="updateNhacNho" id="optionUpdate_a2" onclick="OffReUpate()" value="false" autocomplete="off"> Tắt
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="showNhacNhoUpdate">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Mức Tồn Tối Thiểu</label>
+                                <input type="number" id="MinTUpdate" min="0" max="999999999999" class="form-control" name="MucTonThapNhat" placeholder="Mức tồn tối thiểu">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Mức Tồn Tối Đa</label>
+                                <input type="number" id="MaxTUpdate" min="0" max="999999999999" class="form-control" name="MucTonCaoNhat" placeholder="Mức tồn tối đa">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!---->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu Lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/ui/SanPhamController/PhanMoRong.js"></script>
+<!--Đơn vị tính-->
+<script>
+    // lưu cập nhật lại đơn vị tính cơ bản
+    function GetSaveDG()
+    {
+        var idLoai = $('#IdDG').val();
+        var id = $('#idDVTCB').val();
+        var vl = $('#PackDefaultDG').val();
+        if (vl.length === 0 || !vl.trim()) {
+            toastr.error('Tên đơn vị tính (cơ bản) không được bỏ trống')
+        }
+        else {
+
+            var bundle =
+            {
+                Id: id,
+                Ten: vl,
+                CoBan: true,
+                GiaTriChuyenDoi:1
+            }
+            $.ajax({
+                type: "PUT",
+                url: "@Url.Action("Update","DonViTinhs")",
+                data: bundle,
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.isSuccessed) {
+                        toastr.success('Cập nhật thành công')
+
+                        document.getElementById("EditDG").style.display = "block";
+                        document.getElementById("PackShowDG").style.display = "block";
+
+                        document.getElementById("SaveDG").style.display = "none";
+                        document.getElementById("PackDefaultDG").style.display = "none";
+                        document.getElementById("ShowEnterT").style.display = "none";
+                        $('#PackShowDG').val(vl);
+                        $('#PackDefaultDG').val(vl);
+                        var text = '#TextPack-' + idLoai;
+                        $(text).text(vl);
+
+                    } else {
+                        toastr.error('Cập nhật thất bại')
+
+                    }
+                },
+                error: function (req, status, error) {
+                    toastr.error('Cập nhật thất bại')
+
+                }
+            });
+
+        }
+    }
+
+    // xóa đơn vị tính
+    function donggoiDelete() {
+    var idD = $('#idDeDG').val();
+    $.ajax({
+        type: "DELETE",
+        url: "@Url.Action("Delete", "DonViTinhs")",
+        data: { id: idD },
+        dataType: "json",
+        success: function (msg) {
+            if (msg.isSuccessed) {
+                $('#dgDelete').modal('hide');
+                toastr.success('Xóa thành công')
+                var str = "PackEdit-" + idD;
+                var myobj = document.getElementById(str);
+                myobj.remove();
+            } else {
+                toastr.error('Xóa thất bại')
+
+            }
+        },
+        error: function (req, status, error) {
+            toastr.error('Xóa thất bại')
+
+        }
+    });
+    }
+
+    // cập nhật lưu lại đơn vị tính tự chọn
+     function GetEditDG1(id) {
+        var na = '#NameP' + id;
+        var va = '#ValueP' + id;
+        $('#dgUpdate').modal('show');
+
+        $('#idUpDG').val(id);
+
+        var te = $(na).val();
+        var gi = $(va).val();
+        $('#nameUpDG').val(te);
+        $('#valueUpDG').val(gi);
+
+    }
+
+    function donggoiUp() {
+      var id =  $('#idUpDG').val();
+      var ten =  $('#nameUpDG').val();
+        var gia = $('#valueUpDG').val();
+       // var idLoaiE = $('#IdDG').val();
+
+        if (ten.length === 0 || !ten.trim() || gia.length === 0 || !gia.trim()) {
+            $('#dgUpdate').modal('hide');
+            toastr.error('Dữ liệu không được bỏ trống')
+        } else {
+
+                var bundle =
+                {
+                    Id: id,
+                    Ten: ten,
+                    GiaTriChuyenDoi: gia,
+                    CoBan: false,
+                }
+         $.ajax({
+                type: "PUT",
+                url: "@Url.Action("Update", "DonViTinhs")",
+                data: bundle,
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.isSuccessed) {
+                        var na = '#NameP' + id;
+                        var va = '#ValueP' + id;
+                        if (msg.isSuccessed) {
+                            $('#dgUpdate').modal('hide');
+                            toastr.success('Cập nhật thành công')
+
+                            $(na).val(ten);
+                            $(va).val(gia);
+                        } else {
+                            $('#dgUpdate').modal('hide');
+                            toastr.error('Tên đóng gói bị trùng')
+                            $(na).val(' ');
+                        }
+
+                    } else {
+                        toastr.error('Cập nhật thất bại')
+
+                    }
+                },
+                error: function (req, status, error) {
+                    toastr.error('Cập nhật thất bại')
+
+                }
+            });
+
+        }
+
+    }
+    // tạo thêm đơn vị tính
+    var fraddDG = $('#FormAddDongGoi');
+
+    fraddDG.submit(function (e) {
+
+        $.ajax({
+                type: "POST",
+            url: "@Url.Action("Create", "DonViTinhs")",
+            data: fraddDG.serialize(),
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.isSuccessed) {
+                        toastr.success('Thêm thành công')
+                        ThuGon(); //msg.resultObj.id
+                        var str = '<tr id="PackEdit-' + msg.resultObj.id+ '">' +
+                            '<td id = "Name-' + msg.resultObj.id+ '" >' +
+                            ' <div class="form-group"> ' +
+                            '  <label for="inputEmail4">Tên Đơn Vị Tính</label>' +
+                            '<input type="hidden" id="DG-' + msg.resultObj.id + '" value="' + msg.resultObj.id+ '" />' +
+                            '    <input type="text" class="form-control" id="NameP' + msg.resultObj.id + '" onkeyup="CheckNameDGTuChon(' + msg.resultObj.id+ ')" ' +
+                            'placeholder="Tên đơn vị tính" value="' + msg.resultObj.ten + '"  required>' +
+                            '<span class="text-danger" id="ShowTenDVTTC-' + msg.resultObj.id + '" style="display:none;">Tên đơn vị tính đã tồn tại</span>' +
+                            '   </div>' +
+                            ' </td>' +
+                            '   <td id="Value-' + msg.resultObj.id+ '">' +
+                            '       <div class="form-group">' +
+                            '            <label for="inputEmail4">Giá Trị Chuyển Đổi</label>' +
+                            '            <input type="text" class="form-control" id="ValueP' + msg.resultObj.id + '" ' +
+                            'value="' + msg.resultObj.giaTriChuyenDoi + '" placeholder="Giá trị chuyển đổi" required>' +
+                            '        </div>' +
+                            '     </td>' +
+                            '     <td class="text-center py-0 align-middle">' +
+                            '        <div class="btn-group btn-group-sm">' +
+                            '             <a class="btn btn-success" ' +
+                            '                onclick="GetEditDG1(' + msg.resultObj.id+ ')" title="Sửa" id="luuSuaDVT">' +
+                            '                 <i class="fas fa-check"></i>' +
+                            '            </a>' +
+                            '            <a class="btn btn-danger" ' +
+                            '              onclick="GetDeleteDG(' + msg.resultObj.id + ')" title="Xóa">' +
+                            '               <i class="fas fa-trash"></i>' +
+                            '           </a>' +
+                            '       </div>' +
+                            '   </td>' +
+                            ' </tr>';
+                        $("#dgTR").append(str);
+                    } else {
+                        toastr.error('Thêm thất bại')
+                    }
+                },
+                error: function (req, status, error) {
+                    toastr.error('Thêm thất bại')
+
+                }
+            });
+        e.preventDefault();
+    });
+</script>
+
+<!--Nhắc nhở-->
+<script>
+    function GetNhacNho(id) {
+        $("#idNhacNho").val(id);
+        $.ajax({
+    type: "GET",
+    url: "@Url.Action("GetNhacNho")",
+    data: { id: id },
+        dataType: "json",
+            success: function (msg) {
+                $('#MinTUpdate').val(msg.resultObj.mucTonThapNhat);
+                $('#MaxTUpdate').val(msg.resultObj.mucTonCaoNhat);
+                $("#showNNPhan2").remove();
+                $("#showNN").append('<div id="showNNPhan2"></div>');
+                if (!msg.resultObj.nhacNho) {
+                    document.getElementById("showNhacNhoUpdate").style.display = "none";
+                    var str = '<label class="btn bg-olive">'
+                        + ' <input type = "radio" name = "NhacNho" class="updateNhacNho" id = "optionUpdate_a1" onclick = "OnReUpdate()" value = "true" autocomplete = "off"> Bật'
+                        + '</label>'
+                        + ' <label class="btn bg-olive active">'
+                        + '<input type="radio" name="NhacNho" class="updateNhacNho" id="optionUpdate_a2" onclick="OffReUpate()" value="false" autocomplete="off" checked> Tắt'
+                        + '</label>';
+                    $("#showNNPhan2").append(str);
+                } else {
+                    document.getElementById("showNhacNhoUpdate").style.display = "block";
+                    var str = '<label class="btn bg-olive active">'
+                        + ' <input type = "radio" name = "NhacNho" class="updateNhacNho" id = "optionUpdate_a1" onclick = "OnReUpdate()" value = "true" autocomplete = "off" checked> Bật'
+                        + '</label>'
+                        + ' <label class="btn bg-olive">'
+                        + '<input type="radio" name="NhacNho" class="updateNhacNho" id="optionUpdate_a2" onclick="OffReUpate()" value="false" autocomplete="off"> Tắt'
+                        + '</label>';
+                    $("#showNNPhan2").append(str);
+                }
+        },
+        error: function (req, status, error) {
+
+        }
+    });
+    }
+    var frRe = $('#formRe');
+    frRe.submit(function (e) {
+        var id = $('#idNhacNho').val();
+        var check = $("input[type='radio'].updateNhacNho:checked").val();
+        var ketQuaNN = KiemTraNhacNhoUpdate();
+        if (ketQuaNN == 0) {
+             $.ajax({
+            type: "PUT",
+            url: "@Url.Action("UpdateNhacNho")",
+            data: frRe.serialize(),
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    $('#exampleNhacNho').modal('hide');
+                    toastr.success('Cập nhật thành công')
+
+                    var str = "Re-" + id;
+                    var myobj = document.getElementById(str);
+                    myobj.remove();
+
+                    var str;
+                    var sty;
+                    if (check == "true") {
+                        str = "Bật";
+                        sty = "btn-success";
+                    } else {
+                        str = "Tắt";
+                        sty = "btn-danger";
+                    }
+                    html = '<div  id="Re-'+id+'" class="btn-group btn-group-sm">' +
+                    '<button type="button" class="btn '+sty+'">'+str+'</button>' +
+                        ' <button type="button" class="btn ' + sty +'  dropdown-toggle dropdown-icon" data-toggle="dropdown">' +
+                    ' <span class="sr-only">Toggle Dropdown</span>' +
+                    '</button>' +
+                    ' <div class="dropdown-menu" role="menu">' +
+                    ' <a class="dropdown-item"' +
+                    ' data-toggle="modal" data-target="#exampleNhacNho"' +
+                    ' onclick="GetNhacNho('+id+')">Thao Tác</a>' +
+                    '  </div>' +
+                        '</div>';
+                    var tu = "#Reminder-" + id;
+                    $(tu).append(html);
+
+                            } else {
+                    toastr.error('Cập nhậtthất bại')
+                }
+            },
+            error: function (data) {
+                toastr.error('Cập nhật thất bại')
+            }
+        });
+        }
+
+        e.preventDefault();
+    });
+</script> 

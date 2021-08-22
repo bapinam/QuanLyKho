@@ -1,0 +1,32 @@
+﻿@{ ViewData["Title"] = "Chế Biến";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6" style="margin-bottom:8px; ">
+                <h1>Chế Biến</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right" style="margin-bottom:5px;">
+                    <div class="card-body">
+
+                        <!-- /btn-group -->
+                        <div class="input-group">
+                            <button type="button" onclick="window.location.href='/CheBiens/Index'" class="btn btn-dark">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                            <!-- /btn-group -->
+                        </div>
+                        <!-- /input-group -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@await Html.PartialAsync("PhanPhoiNguyenVatLieu")
+@await Html.PartialAsync("CapNhatPhieuCheBienHoanThanh")
+@await Html.PartialAsync("XemToanBoPhieuHoanThanh")
+@await Html.PartialAsync("XemThongTinPhieu")
+<script src="~/ui/CheBienController/PhanPhoiNguyenVatLieu.js"></script>

@@ -1,0 +1,116 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+<!--Modal View-->
+<div class="modal fade bd-example-modal-lg" id="exampleView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><small>Thông Tin </small> Sản Phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div id="modView">
+                <div class="card-body row" id="ModelView">
+                    <div class="col-5 text-center d-flex align-items-center justify-content-center">
+                        <div class="" id="showImager">
+                        </div>
+                    </div>
+                    <div class="col-7" id="ShowInfor">
+                    </div>
+                </div>
+                <div id="ViewModal1">
+                    <label>&nbsp;  Chuyển Đổi Đơn Vị</label>
+                    <table class="table table-bordered table-striped" id="ViewModal">
+                        <thead>
+                            <tr>
+                                <td>Tên Đơn Vị</td>
+                                <td>Giá Trị</td>
+                                <td>Số Lượng</td>
+                            </tr>
+                        </thead>
+                        <tbody id="BangView">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //ResultObj
+    function GetView(id) {
+         $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetShowAllSanPham")",
+                data: { id: id },
+                dataType: "json",
+             success: function (msg) {
+
+                 var my1 = document.getElementById("ModelView");
+                 my1.remove();
+
+                 var my = document.getElementById("ViewModal1");
+                 my.remove();
+
+                 var mod = '<div class="card-body row" id = "ModelView" >' +
+                 ' <div class="col-5 text-center d-flex align-items-center justify-content-center">' +
+                 '  <div class="" id="showImager">' +
+                 '   </div>' +
+                 ' </div>' +
+                 '<div class="col-7" id="ShowInfor">' +
+                 ' </div>' +
+                 '</div>' +
+                 ' <div id="ViewModal1">' +
+                 '    <label>&nbsp;  Chuyển Đổi Đơn Vị</label>' +
+                 '   <table class="table table-bordered table-striped" id="ViewModal">' +
+                 '      <thead>' +
+                 '        <tr>' +
+                 '           <td>Tên Đơn Vị</td>' +
+                 '           <td>Giá Trị</td>' +
+                 '          <td>Số Lượng</td>' +
+                 ' </tr>' +
+                 '   </thead>' +
+                 '   <tbody id="BangView">' +
+                     '   </tbody>' +
+                        ' </table>'+
+                    ' </div>';
+
+                 $('#modView').append(mod);
+
+                 var anh = '@(Configuration["BaseAddress"])' + msg.resultObj.hinhAnh;
+                var img = '<img src="'+anh+'"'+
+                    'style = "width:200px; height:220px;" />' +
+                    ' <h2>' + msg.resultObj.maSo + '</h2>' +
+                    ' <p class="lead mb-5">' + msg.resultObj.ten+' </p>';
+                 $('#showImager').append(img);
+                 var nhac = "";
+                 if (msg.resultObj.nhacNho) { nhac = "Đang nhắc nhở" } else { nhac = "Đã ngừng nhắc nhở" }
+                 if (msg.resultObj.moTa == null) { msg.resultObj.moTa = "" }
+                 var info = '<div class="form-group"><div><b>Loại Sản Phẩm: &nbsp; </b>' + msg.resultObj.tenLoaiSP + '</div> <hr /></div>' +
+                     '<div class="form-group"><div><b>Mô Tả: &nbsp; </b>' + msg.resultObj.moTa + '</div><hr /></div>' +
+                     '<div class="form-group"><div><b>Số Lượng: &nbsp; </b>' + msg.resultObj.soLuong+ '</div><hr /></div>' +
+                     '<div class="form-group"><div><b>Nhắc Nhở: &nbsp; </b>' + nhac+ '</div><hr /></div>' +
+                     '<div class="form-group"><div><b>Đơn Vị Tính: &nbsp; </b>' + msg.resultObj.tenDVTCoBan + '</div><hr /></div>';
+
+                 $('#ShowInfor').append(info);
+
+                 msg.resultObj.donViTinhCDs.forEach(function (item) {
+
+                     var bang = '<tr><td>' + item.ten + '</td><td>' + item.giaTriChuyenDoi + '<br />' +
+                         ' <small> 1 ' + item.ten + ' = ' + item.giaTriChuyenDoi + ' ' + msg.resultObj.tenDVTCoBan + '</small ></td> ' +
+                         '<td>' + item.chuyenDoi+'</td></tr>';
+                     $('#BangView').append(bang);
+                 });
+
+                },
+                error: function (req, status, error) {
+
+                }
+            });
+    }
+</script>

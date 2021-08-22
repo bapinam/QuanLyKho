@@ -1,0 +1,336 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<div class="card direct-chat direct-chat-primary table-hover12">
+    <div class="card-header">
+        <h3 class="card-title">Loại Sản Phẩm</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body" style="display:none;">
+        <div class="modal-body">
+            <form id="FormLoaiSP" method="post">
+                <div class="form-row">
+                    <input type="hidden" id="TypeLoaiSP" name="MaLoai" value="@MaLoai.LoaiSanPham" />
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenLoaiSP"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeLoaiSP()" required>
+                    </div>
+                    <span class="text-danger" id="showTenLoaiSP">
+                        Tên mã đã tồn tại
+                    </span>
+                    <div class="form-group col-md-6">
+                        <button type="submit" id="btnthemLoaiSP" class="btn btn-primary">Thêm Vào</button>
+                    </div>
+                    <small>Tên mã + số tự tăng: CODE1</small>
+                </div>
+            </form>
+        </div>
+        <div class="modal-body">
+            <table id="LoaiSPtable" class="table table-bordered ">
+                <thead>
+                    <tr>
+                        <th>Tên Mã</th>
+                        <th class="text-center">Ưu Tiên</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="addLoaiSP">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--Modal xóa-->
+<div class="modal fade" id="exampleDeleteLoaiSP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDeleteLoaiSP" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn xóa dữ liệu đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDeleteLoaiSP()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Sửa-->
+<div class="modal fade" id="exampleEditLoaiSP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idEditLoaiSP" />
+                <input type="hidden" id="MaLoaiLoaiSP" value="@MaLoai.LoaiSanPham" />
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenLoaiSPEdit"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeLoaiSPEdit()" disabled>
+                        <span class="text-danger" id="erroGroupLoaiSP">
+                            Tên đã tồn tại
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" name="DinhDau" id="DinhDauEditLoaiSP">
+                            <option value="true">Bật</option>
+                            <option value="false">Tắt</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxSaveLoaiSP()" id="btnEditLoaiSP" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Loại Sản Phẩm-->
+<script>
+    //kiểm tra tên
+    document.getElementById('showTenLoaiSP').style.display = "none";
+    function iCodeLoaiSP()
+    {
+        var nameLoaiSP = $('#TenLoaiSP').val().trim();
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameLoaiSP} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('showTenLoaiSP').style.display = "none";
+                    document.getElementById('btnthemLoaiSP').style.display = "block";
+                } else {
+                    document.getElementById('showTenLoaiSP').style.display = "block";
+                    document.getElementById('btnthemLoaiSP').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('showTenLoaiSP').style.display = "block";
+                    document.getElementById('btnthemLoaiSP').style.display = "none";
+
+                }
+            });
+    }
+
+    document.getElementById('erroGroupLoaiSP').style.display = "none";
+    document.getElementById('btnEditLoaiSP').style.display = "block";
+
+    function iCodeLoaiSPEdit()
+    {
+        var nameLoaiSP1 = $('#TenLoaiSPEdit').val().trim();
+        var id = $('#idEditLoaiSP').val().trim();
+        $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameLoaiSP1, id: id} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('erroGroupLoaiSP').style.display = "none";
+                    document.getElementById('btnEditLoaiSP').style.display = "block";
+                } else {
+                    document.getElementById('erroGroupLoaiSP').style.display = "block";
+                    document.getElementById('btnEditLoaiSP').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('erroGroupLoaiSP').style.display = "block";
+                 document.getElementById('btnEditLoaiSP').style.display = "none";
+
+                }
+            });
+    }
+    //
+   GetLoaiSP();
+    // Lấy giá trị của mã LoaiSP
+    function GetLoaiSP() {
+        var typeMVL = $("#TypeLoaiSP").val();
+
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("GetAll")",
+             data: {type: typeMVL} ,
+                dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+
+                    var str = '<tr id="LoaiSP-' + item.id +'">' +
+                        '<td>' + item.ten + '</td>' +
+                        '<td>' +
+                        '<select class="form-control select2bs4" >';
+
+                    if (item.dinhDau) {
+                        str = str + '      <option  value="true">Bật</option>' ;
+                    } else {
+                        str = str + '      <option  value="false">Tắt</option>';
+                    }
+
+                    str = str + ' </select>' +
+                        '</td>' +
+                        '<td class="text-center py-0 align-middle">' +
+                        '<div class="btn-group btn-group-sm">' +
+                        '<a class="btn btn-primary" data-toggle="modal" data-target="#exampleEditLoaiSP"' +
+                        '   onclick="GetEditLoaiSP(' + item.id + ', \'' + item.ten + '\',' + item.dinhDau +')" title="Sửa">' +
+                        '   <i class="fas fa-pencil-alt"></i>' +
+                        '</a>' +
+                        '<a class="btn btn-danger" data-toggle="modal" data-target="#exampleDeleteLoaiSP"' +
+                        '   onclick="GetDeleteLoaiSP(' + item.id + ')" title="Xóa">' +
+                        '    <i class="fas fa-trash"></i>' +
+                        ' </a>' +
+                        '</div>' +
+                        ' </td>' +
+                        ' </tr >';
+                    $('#addLoaiSP').append(str);
+                });
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Thêm thất bại')
+
+                }
+            });
+    }
+
+    // Thêm : btnthemLoaiSP,TenLoaiSP
+    var formLoaiSP = $('#FormLoaiSP');
+    formLoaiSP.submit(function (e) {
+        var nameLoaiSP = $('#TenLoaiSP').val().trim();
+        if (nameLoaiSP.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (nameLoaiSP.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Create")",
+                    data: formLoaiSP.serialize(),
+                    dataType: "json",
+                    success: function (msg) {
+                        toastr.success('Thêm thành công')
+
+                        $('#addLoaiSP').remove();
+                        $('#LoaiSPtable').append('<tbody id="addLoaiSP"></tbody>');
+                        GetLoaiSP();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Thêm thất bại')
+
+                    }
+                });
+            }
+        }
+        e.preventDefault();
+    });
+
+    // xóa
+    function GetDeleteLoaiSP(id) {
+        $("#idDeleteLoaiSP").val(id);
+    }
+
+    function ajaxDeleteLoaiSP() {
+        var id = $("#idDeleteLoaiSP").val();
+        $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("Delete")",
+            data: {id:id},
+                dataType: "json",
+            success: function (msg) {
+                 if (msg.isSuccessed) {
+                     $('#exampleDeleteLoaiSP').modal("hide")
+                     toastr.success('Xóa thành công')
+                     var de = "#LoaiSP-" + id;
+                     $(de).remove();
+                 } else {
+                     toastr.error('Xóa thất bại')
+                 }
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Xóa thất bại')
+
+                }
+            });
+    }
+
+    // CẬP nhật
+    function GetEditLoaiSP(id, name, top) {
+        document.getElementById('erroGroupLoaiSP').style.display = "none";
+        document.getElementById('btnEditLoaiSP').style.display = "block";
+        $("#idEditLoaiSP").val(id);
+        $("#TenLoaiSPEdit").val(name);
+        if (top) {
+            $("#DinhDauEditLoaiSP").val("true");
+        } else {
+            $("#DinhDauEditLoaiSP").val("false");
+        }
+    }
+
+    function ajaxSaveLoaiSP() {
+
+        var id = $("#idEditLoaiSP").val();
+        var name = $("#TenLoaiSPEdit").val();
+        var top = $("#DinhDauEditLoaiSP").val();
+        var type = $("#MaLoaiLoaiSP").val();
+        if (name.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (name.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                var data =
+                {
+                    Id: id,
+                    Ten: name,
+                    DinhDau: top,
+                    MaLoai: type
+                };
+                $.ajax({
+                    type: "PUT",
+                    url: "@Url.Action("Update")",
+                    data: data,
+                    dataType: "json",
+                    success: function (msg) {
+                        $('#exampleEditLoaiSP').modal("hide")
+                        toastr.success('Cập nhật thành công');
+                        $('#addLoaiSP').remove();
+                        $('#LoaiSPtable').append('<tbody id="addLoaiSP"></tbody>');
+                        GetLoaiSP();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Cập nhật thất bại');
+
+                    }
+                });
+            }
+        }
+    }
+</script>

@@ -1,0 +1,144 @@
+﻿@using QuanLyKho.ViewModels.Common;
+@using QuanLyKho.Data.Extensions.Enums;
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@model PagedResult<QuanLyKho.ViewModels.User.UserVm>
+
+@{ ViewData["Title"] = "Nhân Viên";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6" style="margin-bottom:8px; ">
+                <h1>Nhân Viên</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content" id="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Danh Sách</h3>
+                        <div class="col-md-5" style="float:right;">
+                            <form asp-action="Index" method="get">
+                                <div class="form-group">
+                                    <div class="col-md-9" style="float:left; margin-bottom:5px;">
+                                        <input type="text" value="@ViewBag.Keyword" name="tuKhoa" class="form-control" placeholder="Nhập mã số hoặc căn cước công dân" />
+                                    </div>
+                                    <div class="cold-md-6" style="float:right; ">
+                                        <button type="submit" class="btn btn-primary">Tìm</button>
+                                        <button type="button" onclick="window.location.href='/GiaoQuyenHan/Index'" class="btn btn-dark">Reset</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Mã Số</th>
+                                    <th>Căn Cước Công Dân</th>
+                                    <th>Họ</th>
+                                    <th>Tên</th>
+                                    <th>Địa Chỉ</th>
+                                    <th>Tình Trạng Làm Việc</th>
+                                    <th class="text-center">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addTR">
+
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr id="@Html.DisplayFor(modelItem => item.Id)">
+                                        <td id="Code-@Html.DisplayFor(modelItem => item.Id)">
+                                            @Html.DisplayFor(modelItem => item.MaSo)
+                                        </td>
+                                        <td id="Card-@Html.DisplayFor(modelItem => item.Id)">
+                                            @Html.DisplayFor(modelItem => item.CanCuocCongDan)
+                                        </td>
+                                        <td id="Last-@Html.DisplayFor(modelItem => item.Id)">
+                                            @Html.DisplayFor(modelItem => item.Ho)
+                                        </td>
+                                        <td id="First-@Html.DisplayFor(modelItem => item.Id)">
+                                            @Html.DisplayFor(modelItem => item.Ten)
+                                        </td>
+                                        <td id="Address-@Html.DisplayFor(modelItem => item.Id)">
+                                            @Html.DisplayFor(modelItem => item.DiaChi)
+                                        </td>
+                                        <td id="TinhTrang-@Html.DisplayFor(modelItem => item.Id)">
+                                            @Html.DisplayFor(modelItem => item.TinhTrangLamViec)
+                                        </td>
+                                        <td class="text-center py-0 align-middle">
+                                            <div class="btn-group btn-group-sm">
+                                                <a class="btn btn-success" data-toggle="modal" data-target="#exampleGiaoQuyen"
+                                                   onclick="GiaoQuyen('@item.Id')" title="Giao Quyền">
+                                                    <i class="fas fa-handshake"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            @*<tfoot>
+                                <tr>
+                                    <th>Mã Số</th>
+                                    <th>Căn Cước Công Dân</th>
+                                    <th>Họ</th>
+                                    <th>Tên</th>
+                                    <th>Địa Chỉ</th>
+
+                                    <th class="text-center">Thao Tác</th>
+                                </tr>
+                            </tfoot>*@
+                        </table>
+
+                        @await Component.InvokeAsync("Pager", Model)
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+<!--Giao quyền hạn-->
+<div class="modal fade bd-example-modal-lg" id="exampleGiaoQuyen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Giao Quyền</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <form id="frmAssign" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="IdUser" name="Id" />
+
+                    <div class="card card-primary card-outline">
+                        <div class="card-body p-0">
+                            @await Html.PartialAsync("GiaoQuyenModal")
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu Lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

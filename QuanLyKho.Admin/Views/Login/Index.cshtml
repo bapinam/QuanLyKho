@@ -1,0 +1,87 @@
+﻿@model QuanLyKho.ViewModels.User.LoginRequest
+@{ ViewData["Title"] = "Đăng Nhập";
+    Layout = "~/Views/Shared/_LayoutLogIn.cshtml";
+}
+
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Đăng Nhập</p>
+
+        <form asp-controller="Login" asp-action="Index" method="post">
+
+            @if (ViewBag.Login != null)
+            {
+                <div class="text-danger">@ViewBag.Login</div>}
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" asp-for="UserName" placeholder="Tài khoản" required>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-user"></span>
+                    </div>
+                </div>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" class="form-control" asp-for="Password" placeholder="Mật khẩu" required>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="icheck-primary">
+                        <input type="checkbox" id="remember" asp-for="RememberMe">
+                        <label for="remember">
+                            Nhớ mật khẩu
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="social-auth-links text-center mb-3">
+                <button type="submit" class="btn btn-primary btn-block">Đăng Nhập</button>
+            </div>
+        </form>
+        <!-- /.social-auth-links -->
+        <style>
+            .sh {
+                background-color: Transparent;
+                background-repeat: no-repeat;
+                border: none;
+            }
+
+                .sh:hover {
+                    color: blue;
+                    text-decoration: underline;
+                }
+        </style>
+        <p class="mb-1 ">
+            <button class="sh" data-toggle="modal" data-target="#exampleForget">Quên mật khẩu?</button>
+        </p>
+    </div>
+    <!-- /.login-card-body -->
+    <div class="modal fade" id="exampleForget" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Mật Khẩu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!---->
+                <div class="modal-body">
+                    <h5 class="modal-title" id="exampleModalLabel">Vui lòng liên hệ <b>Quản trị viên</b> để cập nhật lại mật khẩu.</h5>
+                </div>
+                <!---->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

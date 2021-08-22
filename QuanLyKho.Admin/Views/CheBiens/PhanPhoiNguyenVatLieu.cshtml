@@ -1,0 +1,146 @@
+﻿<style>
+    #HuyKeHoachCheBien {
+        overflow-y: scroll
+    }
+</style>
+<section class="content">
+    <!-- Default box -->
+    <div class="card collapsed-box">
+        <div class="card-header">
+            <h3 class="card-title">Danh Sách Kế Hoạch Đang Chờ Chế Biến</h3>
+
+            <div class="card-tools">
+                <span title="Kế Hoạch Chế Biến" data-toggle="tooltip" data-placement="top" class="badge badge-warning" id="SoHDCTT" style="float:left;">
+                </span>
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body" style="display: none;">
+
+            <form id="frmTKKH" method="get">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="NgayTKKH" name="ngayDuKien" placeholder="Chọn ngày dự kiến">
+                                        <div class="input-group-append">
+                                            <button type="button" onclick="resetLaiNgayTKKH()" class="btn btn-default" title="Không tìm kiếm theo ngày">
+                                                <i class="fa fa-refresh"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" name="tuKhoa" id="tuKhoaTKKH"
+                                               placeholder="Nhập mã số hoặc tên kế hoạch">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default" title="Tìm kiếm kế hoạch chế biến">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <table id="example25656" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã Số</th>
+                        <th>Tên</th>
+                        <th>Ngày Tạo</th>
+                        <th>Người Tạo</th>
+                        <th>Người Nhận</th>
+                        <th>Trạng Thái</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="phanPhoiTableShow">
+                    <tr class="delete-kehoach">
+                        <td colspan="7">Không tìm thấy dữ liệu</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <!-- /.card -->
+</section>
+
+<!--Modal xem danh sách chế biến-->
+<div class="modal fade bd-example-modal-lg" id="HuyKeHoachCheBien" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xem Danh Sách Chế Biến</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="card-body">
+                    <label>
+                        Danh Sách Sản Phẩm Chế Biến
+                    </label>
+                    <table id="tableShowViewKH12" class="table table-bordered table-striped table-hover table-responsive-xl">
+                        <thead>
+                            <tr>
+                                <th>Mã Số</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Mã Công Thức</th>
+                                <th>Số Lượng</th>
+                                <th>Số Lượng Đã Thêm</th>
+                                <th>ĐVT</th>
+                                <th class="text-center">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ShowViewHuyKeHoachCheBien">
+                        </tbody>
+                    </table>
+                    <label style="float:right; margin-top: 20px;" id="TongTien"></label>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal hủy phiếu -->
+<div class="modal fade" id="modalHoiHuyCheBien" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hủy Phiếu Chế Biến</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idHoiHuyCheBien" />
+                <h5 class="modal-title">
+                    Bạn có muốn hủy chế biến này không ?
+                </h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxHuyCheBien()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("KeHoachCheBien/TaoPhieuCheBien")

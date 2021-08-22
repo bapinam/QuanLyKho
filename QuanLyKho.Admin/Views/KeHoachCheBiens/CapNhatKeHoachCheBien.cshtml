@@ -1,0 +1,403 @@
+﻿<!--Modal Xóa-->
+<div class="modal fade" id="exampleXoaKeHoachCB" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Kế Hoạch Chế Biến</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idKeHoachXoa" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn xóa dữ liệu đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDeleteKH()" class="btn btn-danger">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modalSua {
+        overflow-y: scroll
+    }
+</style>
+<!--Modal sửa-->
+<div class="modal fade bd-example-modal-lg" id="modalSua" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tạo Kế Hoạch Chế Biến</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="card-body pb-0">
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-5 order-2 order-md-1">
+                            <form id="frmTKKHCBEdit" method="get">
+                                <div class="form-group">
+                                    <label for="inputEmail4">Nhóm Sản Phẩm</label>
+                                    <div id="DeMTEdit">
+                                        <select id="NhomSPEdit" name="NhomSanPham" onchange="TimKiemLoaiSanPhamEdit()" class="form-control" required>
+                                            <option selected>Chọn dữ liệu...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEmail4">Loại Sản Phẩm</label>
+                                    <div id="DeMTTypeEdit">
+                                        <select id="LoaiSPEdit" name="LoaiSanPham" class="form-control" required>
+                                            <option selected>Chọn dữ liệu...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" type="search" style="width:88%; float:left; margin-right:7px;" id="TimKiemSanPhamEdit"
+                                           placeholder="Tìm kiếm mã số hoặc tên sản phẩm" aria-label="Search">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fas fa-search fa-fw"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>Danh Sách Tìm Kiếm</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="showbodyIdTableEdit">
+                                        <div id="bodyIdTableEdit">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--//////////////////////////////////////////////////////////////////////////////////////////////////-->
+                        <div class="col-12 col-md-12 col-lg-7 order-1 order-md-2">
+                            <form id="AddSaveKeHoachCBEdit" method="post">
+                                <input type="hidden" class="form-control" name="Id" id="idKHSua">
+                                <input type="hidden" class="form-control" name="IdChiMuc" value="@ViewBag.ChiMuc">
+                                <h3 class="text-primary"><i class="fas fa-paint-brush"></i>Phiếu Kế Hoạch</h3>
+                                <h5 class="mt-5 text-muted"></h5>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="inputEmail4">Mã Số</label>
+                                        <input id="CodeChonEdit" name="MaSo" class="form-control" disabled />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="inputEmail4">Tên</label>
+                                        <input type="text" class="form-control" name="Ten" id="NameEdit" placeholder="Tên kế hoạch" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEmail4">Ngày Dự Kiến</label>
+                                    <input type="text" class="form-control" id="NgayKetThucDuKienEdit" name="NgayDuKien">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAddress">Ghi Chú</label>
+                                    <input type="text" class="form-control" name="GhiChu" id="NoteEdit" placeholder="Ghi chú">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAddress">Giao Kế Hoạch</label>
+                                    <button type="button" class="form-control" onclick="GiaoViecEdit()"
+                                            data-toggle="modal" data-target="#exampleGiaoViecEdit"
+                                            id="IdResponsibleEdit">
+                                        <div id="ShowNVienGVEdit"></div>
+                                    </button>
+                                    @{
+                                        var user = User.Identity.Name;
+                                    }
+                                    <input name="NguoiTao" value="@user" type="hidden" />
+                                    <input name="IdNguoiNhan" id="IdNguoiNhanEdit" type="hidden" />
+                                </div>
+                                <h5 class="mt-5 text-muted">Đã thêm</h5>
+                                <table id="example245Edit" class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Công Thức</th>
+                                            <th style="width:150px;">ĐVT</th>
+                                            <th>Số Lượng</th>
+                                            <th>Ghi Chú</th>
+                                            <th class="text-center">Thao Tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableAddruEdit">
+                                    </tbody>
+                                </table>
+                                <div class="text-center mt-5 mb-3">
+                                    <button class="btn btn-primary">Lưu Lại</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal tìm kiếm nhân viên-->
+<div class="modal fade bd-example-modal-lg" id="exampleGiaoViecEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nhân Viên</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="form-group">
+                    <form id="frmTKNVEdit" method="post">
+                        <input class="form-control" type="search" style="width:93%; float:left; margin-right:7px;" id="TimKiemNVEdit"
+                               placeholder="Tìm kiếm mã số, căn cước công dân, tên nhân viên" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <br />
+                    <h5>Danh Sách Nhân Viên Đang Làm Việc</h5>
+                    <table id="tableNhanVien3Edit" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã Số</th>
+                                <th>Căn Cước Công Dân</th>
+                                <th>Họ</th>
+                                <th>Tên</th>
+                                <th class="text-center">Giao Việc</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableNVIENEdit">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal showw đơn vị tính -->
+<div class="modal fade bd-example-modal-lg" id="exampleViewChuyenDoiEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Bảng Chuyển Đổi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail4">ĐVT (cơ bản)</label>
+                        <input id="PackMDEdit" class="form-control" disabled />
+                        <small>Giả sử: 1 ĐVT = 100 ĐVT (cơ bản)</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail4">Số Lượng Nhập</label>
+                        <input id="PackSLEdit" class="form-control" disabled />
+                    </div>
+                </div>
+                <table id="tableNhPack" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ĐVT</th>
+                            <th>Giá Trị</th>
+                            <th>Chuyển Đổi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableNPacketertEdit">
+                    </tbody>
+                </table>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // xóa kế hoạch
+    function ajaxDeleteKH() {
+        var id = $("#idKeHoachXoa").val();
+        $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("Delete")",
+            data: { id: id },
+            dataType: "json",
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    toastr.success('Xóa thành công');
+                    Remove(id);
+                    $("#exampleXoaKeHoachCB").modal("hide");
+
+                    // gửi thông điệp
+                    var user = msg.resultObj.nguoiNhan;
+                    var message =
+                    {
+                        Id: msg.resultObj.id,
+                        Ten: msg.resultObj.ten,
+                        DuongDan: msg.resultObj.duongDan,
+                    };
+                    connection.invoke("SendMessage", user, message).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+
+                } else {
+                    toastr.error(msg.message);
+
+                }
+            },
+            error: function (req, status, error) {
+                toastr.error('Xóa thất bại');
+
+            }
+        });
+    }
+    // lưu lại cập nhật kế hoạch
+    var AddSaveKeHoachCBEdit = $("#AddSaveKeHoachCBEdit");
+    AddSaveKeHoachCBEdit.submit(function (e) {
+       var idNguoiNhan = $("#IdNguoiNhanEdit").val();
+        if (arrayThemCongThucEdit.length <= 0) {
+            toastr.error('Công thức chưa được thêm');
+        } else {
+            if (idNguoiNhan.length <= 0) {
+                toastr.error('Cần giao kế hoạch cho nhân viên');
+
+            } else {
+             $.ajax({
+                type: "PUT",
+                 url: "@Url.Action("Update")",
+                 data: AddSaveKeHoachCBEdit.serialize(),
+                dataType: "json",
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    toastr.success('Cập nhật kế hoạch thành công');
+                    $("#modalSua").modal("hide");
+                    $("#AddSaveKeHoachCBEdit").trigger("reset");
+                    document.getElementById('ShowNVienGVEdit').innerHTML = "";
+                    $("#IdNguoiNhanEdit").val('');
+                    $('.CongThucThemClassEdit').remove();
+                    arrayThemCongThucEdit = [];
+                    var ten = msg.resultObj.maSo + ": " + msg.resultObj.ten;
+                    Remove(msg.resultObj.id);
+                    AddEvent({
+                        id: msg.resultObj.id,
+                        title: ten,
+                        extendedProps: {
+                            department: false
+                        },
+                        description:'ChuaHoanThanh',
+                        start: new Date(msg.resultObj.ngayBatDauDuKien),
+                        end: new Date(msg.resultObj.ngayKetThucDuKien),
+                        backgroundColor: '#f39c12',
+                        borderColor: '#f39c12',
+                        allDay: true
+                    });
+
+                    // gửi thông điệp
+                    if (!msg.resultObj.giaoChoNguoiKhac) {
+                        msg.resultObj.thongBaoModelOld.forEach(function (item) {
+                            var user = item.nguoiNhan;
+                            var message =
+                            {
+                                Id: item.id,
+                                Ten: item.ten,
+                                DuongDan: item.duongDan,
+                            };
+                            connection.invoke("SendMessage", user, message).catch(function (err) {
+                                return console.error(err.toString());
+                            });
+                        });
+
+                    } else {
+                        // gửi cho người mới
+
+                        msg.resultObj.thongBaoModelNew.forEach(function (item) {
+                            var user = item.nguoiNhan;
+                            var message =
+                            {
+                                Id: item.id,
+                                Ten: item.ten,
+                                DuongDan: item.duongDan,
+                            };
+                            connection.invoke("SendMessage", user, message).catch(function (err) {
+                                return console.error(err.toString());
+                            });
+                        });
+
+                        // gửi cho người củ
+                        msg.resultObj.thongBaoModelOld.forEach(function (item) {
+                            var user = item.nguoiNhan;
+                            var message =
+                            {
+                                Id: item.id,
+                                Ten: item.ten,
+                                DuongDan: item.duongDan,
+                            };
+                            connection.invoke("SendMessage", user, message).catch(function (err) {
+                                return console.error(err.toString());
+                            });
+                        });
+                    }
+
+                }
+                else {
+                    toastr.error(msg.message);
+                }
+                },
+                error: function (req, status, error) {
+                    toastr.error('Cập nhật kế hoạch thất bại');
+                }
+            });
+            }
+        }
+        e.preventDefault();
+    });
+
+    // xóa công thức cập nhật
+    function GetDeleteCongThucUpdate(id,idCT) {
+         $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("DeleteCongThuc")",
+            data: { id: id },
+            dataType: "json",
+            success: function (msg) {
+                if (msg.isSuccessed) {
+                    toastr.success('Xóa thành công');
+                    var str = "#ThemCTKHEdit-" + idCT;
+                    $(str).remove();
+                    var pos = arrayThemCongThucEdit.indexOf(idCT);
+                    arrayThemCongThucEdit.splice(pos, 1);
+                } else {
+                    toastr.error(msg.message);
+
+                }
+            },
+            error: function (req, status, error) {
+                toastr.error('Xóa thất bại');
+
+            }
+        });
+    }
+</script>

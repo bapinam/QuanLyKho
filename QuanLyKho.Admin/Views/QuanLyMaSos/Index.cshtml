@@ -1,0 +1,59 @@
+﻿@{ ViewData["Title"] = "Quản Lý Mã Số";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+<style>
+    .table-hover12:hover {
+        background-color: #FDF5E6;
+        color: #000000;
+    }
+</style>
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6" style="margin-bottom:8px; ">
+                <h1>Quản Lý Mã Số</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right" style="margin-bottom:5px;">
+                    <button type="button" onclick="window.location.href='/QuanLyMaSos/Index'" class="btn btn-dark">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-4 connectedSortable">
+                @await Html.PartialAsync("BenTraiView/XemLoaiNguyenVatLieu")
+                @await Html.PartialAsync("BenTraiView/XemNguyenVatLieu")
+                @await Html.PartialAsync("BenTraiView/XemNhaCungCap")
+                @await Html.PartialAsync("BenTraiView/XemNguoiDung")
+            </section>
+
+            <!--Middle-->
+            <section class="col-lg-4 connectedSortable">
+                @await Html.PartialAsync("ChinhGiuaView/XemNhomSanPham")
+                @await Html.PartialAsync("ChinhGiuaView/XemLoaiSanPham")
+                @await Html.PartialAsync("ChinhGiuaView/XemSanPham")
+                @await Html.PartialAsync("ChinhGiuaView/XemHoaDon")
+            </section>
+
+            <!--Right-->
+            <section class="col-lg-4 connectedSortable">
+                @await Html.PartialAsync("BenPhaiView/XemKeHoachDatHang")
+                @await Html.PartialAsync("BenPhaiView/XemKeHoachCheBien")
+                @await Html.PartialAsync("BenPhaiView/XemCongThuc")
+                @await Html.PartialAsync("BenPhaiView/XemPhieuCheBien")
+            </section>
+
+            <!-- right col -->
+        </div>
+        <!-- /.row (main row) -->
+    </div><!-- /.container-fluid -->
+</section>

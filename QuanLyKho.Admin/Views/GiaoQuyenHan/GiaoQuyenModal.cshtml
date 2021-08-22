@@ -1,0 +1,180 @@
+﻿<div class="table-responsive mailbox-messages">
+    <table class="table">
+        <tbody>
+            <tr>
+                <td rowspan="0">
+                    <div class="icheck-primary">
+                        <input type="checkbox" value="QuanLyCheBien" id="check1" name="QuanLy">
+                        <label for="check1"></label>
+                    </div>
+                </td>
+                <td class="mailbox-name mi" rowspan="0"><a>Quản Lý Chế Biến</a></td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Tạo Kế Hoạch</b> - Có chức năng tạo kế hoạch đặt hàng
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Sửa Kế Hoạch</b> - Có chức năng sửa kế hoạch đặt hàng chưa nhận
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Xóa Kế Hoạch</b> - Có chức năng xóa kế hoạch đặt hàng chưa nhận
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Xem Kế Hoạch</b> - Xem danh sách đặt hàng
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Xem Phiếu</b> - Xem danh sách phiếu chế biến
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Tạo Phiếu</b> - Có chức năng phân phối nguyên liệu
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Nhập Sản Phẩm</b> - Có chức năng lưu sản phẩm vào kho
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Xem Sản Phẩm</b> - Có chức năng xem và tìm kiếm
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- /.table -->
+</div>
+<div class="table-responsive mailbox-messages">
+    <table class="table">
+        <tbody>
+            <tr>
+                <td rowspan="0">
+                    <div class="icheck-primary">
+                        <input type="checkbox" value="QuanLyDatHang" id="check2" name="QuanLy">
+                        <label for="check2"></label>
+                    </div>
+                </td>
+                <td class="mailbox-name mi" rowspan="0"><a>Quản Lý Đặt Hàng</a></td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Tạo Kế Hoạch</b> - Có chức năng tạo kế hoạch đặt hàng
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Sửa Kế Hoạch</b> - Có chức năng sửa kế hoạch đặt hàng chưa nhận
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Xóa Kế Hoạch</b> - Có chức năng xóa kế hoạch đặt hàng chưa nhận
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Xem Kế Hoạch</b> - Xem danh sách đặt hàng
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Xem Phiếu</b> - Xem danh sách phiếu chế biến
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Nhập Hóa Đơn</b> - Có chức năng nhập hóa đơn
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Cập nhật thanh toán</b> - Thanh toán lại số tiền chưa trả
+                </td>
+            </tr>
+            <tr>
+                <td class="mailbox-subject">
+                    <b>Xem Nguyên Vật Liệu</b> - Có chức năng xem và tìm kiếm
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- /.table -->
+</div>
+<script>
+
+    function GiaoQuyen(id) {
+        document.getElementById("check1").checked = false;
+        document.getElementById("check2").checked = false;
+
+        $("#IdUser").val(id);
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetRole")",
+            data: {id:id},
+                dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+                    if (item.tenVaiTro == 'QuanLyDatHang') {
+                        document.getElementById("check2").checked = true;
+                    }
+
+                    if (item.tenVaiTro  == 'QuanLyCheBien') {
+                        document.getElementById("check1").checked = true;
+                    }
+                });
+                },
+            error: function (req, status, error) {
+
+            }
+         });
+    }
+
+    var frmAssign = $("#frmAssign");
+    frmAssign.submit(function (e) {
+
+        var id = $("#IdUser").val();
+        // Khai báo tham số
+        var checkbox = document.getElementsByName('QuanLy');
+        var result = [];
+
+        // Lặp qua từng checkbox để lấy giá trị
+        for (var i = 0; i < checkbox.length; i++) {
+            if (checkbox[i].checked === true) {
+                var vl = checkbox[i].value;
+                result.push(vl);
+            }
+        }
+        var bunle =
+        {
+            Id: id,
+            QuanLy: result
+        };
+
+         $.ajax({
+                type: "POST",
+                url: "@Url.Action("GiaoQuyenHan")",
+               data: bunle,
+                dataType: "json",
+                success: function (msg) {
+                    toastr.success('Giao quyền thành công')
+                    $("#exampleGiaoQuyen").modal("hide");
+               },
+             error: function (req, status, error) {
+                 toastr.error('Giao quyền thất bại')
+                }
+            });
+
+        e.preventDefault();
+    });
+</script>

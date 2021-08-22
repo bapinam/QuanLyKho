@@ -1,0 +1,337 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<div class="card direct-chat direct-chat-primary table-hover12">
+    <div class="card-header">
+        <h3 class="card-title">Nhân Viên</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body" style="display:none;">
+        <div class="modal-body" >
+            <form id="FormNguoiDung" method="post">
+                <div class="form-row">
+                    <input type="hidden" id="TypeNguoiDung" name="MaLoai" value="@MaLoai.NguoiDung" />
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenNguoiDung"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeNguoiDung()" required>
+                    </div>
+                    <span class="text-danger" id="showTenNguoiDung">
+                        Tên mã đã tồn tại
+                    </span>
+                    <div class="form-group col-md-6">
+                        <button type="submit" id="btnthemNguoiDung" class="btn btn-primary">Thêm Vào</button>
+                    </div>
+                    <small>Tên mã + số tự tăng: CODE1</small>
+                </div>
+            </form>
+        </div>
+        <div class="modal-body">
+            <table id="NguoiDungtable" class="table table-bordered ">
+                <thead>
+                    <tr>
+                        <th>Tên Mã</th>
+                        <th class="text-center">Ưu Tiên</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="addNguoiDung">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--Modal xóa-->
+<div class="modal fade" id="exampleDeleteNguoiDung" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDeleteNguoiDung" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn xóa dữ liệu đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDeleteNguoiDung()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Sửa-->
+<div class="modal fade" id="exampleEditNguoiDung" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idEditNguoiDung" />
+                <input type="hidden" id="MaLoaiNguoiDung" value="@MaLoai.NguoiDung" />
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenNguoiDungEdit"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeNguoiDungEdit()" disabled>
+                        <span class="text-danger" id="erroGroupNguoiDung">
+                            Tên đã tồn tại
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" name="DinhDau" id="DinhDauEditNguoiDung">
+                            <option value="true">Bật</option>
+                            <option value="false">Tắt</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxSaveNguoiDung()" id="btnEditNguoiDung" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Nhân Viên-->
+<script>
+    //kiểm tra tên
+    document.getElementById('showTenNguoiDung').style.display = "none";
+    function iCodeNguoiDung()
+    {
+        var nameNguoiDung = $('#TenNguoiDung').val().trim();
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameNguoiDung} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('showTenNguoiDung').style.display = "none";
+                    document.getElementById('btnthemNguoiDung').style.display = "block";
+                } else {
+                    document.getElementById('showTenNguoiDung').style.display = "block";
+                    document.getElementById('btnthemNguoiDung').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('showTenNguoiDung').style.display = "block";
+                    document.getElementById('btnthemNguoiDung').style.display = "none";
+
+                }
+            });
+    }
+
+    document.getElementById('erroGroupNguoiDung').style.display = "none";
+    document.getElementById('btnEditNguoiDung').style.display = "block";
+
+    function iCodeNguoiDungEdit()
+    {
+        var nameNguoiDung1 = $('#TenNguoiDungEdit').val().trim();
+        var id = $('#idEditNguoiDung').val().trim();
+        $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameNguoiDung1, id: id} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('erroGroupNguoiDung').style.display = "none";
+                    document.getElementById('btnEditNguoiDung').style.display = "block";
+                } else {
+                    document.getElementById('erroGroupNguoiDung').style.display = "block";
+                    document.getElementById('btnEditNguoiDung').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('erroGroupNguoiDung').style.display = "block";
+                 document.getElementById('btnEditNguoiDung').style.display = "none";
+
+                }
+            });
+    }
+    //
+   GetNguoiDung();
+    // Lấy giá trị của mã NguoiDung
+    function GetNguoiDung() {
+        var typeMVL = $("#TypeNguoiDung").val();
+
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("GetAll")",
+             data: {type: typeMVL} ,
+                dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+
+                    var str = '<tr id="NguoiDung-' + item.id +'">' +
+                        '<td>' + item.ten + '</td>' +
+                        '<td>' +
+                        '<select class="form-control select2bs4" >';
+
+                    if (item.dinhDau) {
+                        str = str + '      <option  value="true">Bật</option>' ;
+                    } else {
+                        str = str + '      <option  value="false">Tắt</option>';
+                    }
+
+                    str = str + ' </select>' +
+                        '</td>' +
+                        '<td class="text-center py-0 align-middle">' +
+                        '<div class="btn-group btn-group-sm">' +
+                        '<a class="btn btn-primary" data-toggle="modal" data-target="#exampleEditNguoiDung"' +
+                        '   onclick="GetEditNguoiDung(' + item.id + ', \'' + item.ten + '\',' + item.dinhDau +')" title="Sửa">' +
+                        '   <i class="fas fa-pencil-alt"></i>' +
+                        '</a>' +
+                        '<a class="btn btn-danger" data-toggle="modal" data-target="#exampleDeleteNguoiDung"' +
+                        '   onclick="GetDeleteNguoiDung(' + item.id + ')" title="Xóa">' +
+                        '    <i class="fas fa-trash"></i>' +
+                        ' </a>' +
+                        '</div>' +
+                        ' </td>' +
+                        ' </tr >';
+                    $('#addNguoiDung').append(str);
+                });
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Thêm thất bại')
+
+                }
+            });
+    }
+
+    // Thêm : btnthemNguoiDung,TenNguoiDung
+    var formNguoiDung = $('#FormNguoiDung');
+    formNguoiDung.submit(function (e) {
+        var nameNguoiDung = $('#TenNguoiDung').val().trim();
+        if (nameNguoiDung.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (nameNguoiDung.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                 $.ajax({
+                type: "POST",
+                 url: "@Url.Action("Create")",
+                 data: formNguoiDung.serialize(),
+                dataType: "json",
+            success: function (msg) {
+                toastr.success('Thêm thành công')
+
+                $('#addNguoiDung').remove();
+                $('#NguoiDungtable').append('<tbody id="addNguoiDung"></tbody>');
+                GetNguoiDung();
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Thêm thất bại')
+
+                }
+            });
+            }
+
+        }
+        e.preventDefault();
+    });
+
+    // xóa
+    function GetDeleteNguoiDung(id) {
+        $("#idDeleteNguoiDung").val(id);
+    }
+
+    function ajaxDeleteNguoiDung() {
+        var id = $("#idDeleteNguoiDung").val();
+        $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("Delete")",
+            data: {id:id},
+                dataType: "json",
+            success: function (msg) {
+                 if (msg.isSuccessed) {
+                     $('#exampleDeleteNguoiDung').modal("hide")
+                     toastr.success('Xóa thành công')
+                     var de = "#NguoiDung-" + id;
+                     $(de).remove();
+                 } else {
+                     toastr.error('Xóa thất bại')
+                 }
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Xóa thất bại')
+
+                }
+            });
+    }
+
+    // CẬP nhật
+    function GetEditNguoiDung(id, name, top) {
+        document.getElementById('erroGroupNguoiDung').style.display = "none";
+        document.getElementById('btnEditNguoiDung').style.display = "block";
+        $("#idEditNguoiDung").val(id);
+        $("#TenNguoiDungEdit").val(name);
+        if (top) {
+            $("#DinhDauEditNguoiDung").val("true");
+        } else {
+            $("#DinhDauEditNguoiDung").val("false");
+        }
+    }
+
+    function ajaxSaveNguoiDung() {
+        var id = $("#idEditNguoiDung").val();
+        var name = $("#TenNguoiDungEdit").val();
+        var top = $("#DinhDauEditNguoiDung").val();
+        var type = $("#MaLoaiNguoiDung").val();
+        if (name.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (name.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                var data =
+                {
+                    Id: id,
+                    Ten: name,
+                    DinhDau: top,
+                    MaLoai: type
+                };
+                $.ajax({
+                    type: "PUT",
+                    url: "@Url.Action("Update")",
+                    data: data,
+                    dataType: "json",
+                    success: function (msg) {
+                        $('#exampleEditNguoiDung').modal("hide")
+                        toastr.success('Cập nhật thành công');
+                        $('#addNguoiDung').remove();
+                        $('#NguoiDungtable').append('<tbody id="addNguoiDung"></tbody>');
+                        GetNguoiDung();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Cập nhật thất bại');
+
+                    }
+                });
+            }
+        }
+
+    }
+</script>

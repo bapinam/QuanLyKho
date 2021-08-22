@@ -1,0 +1,83 @@
+﻿<!--Modal xem kế hoạch-->
+<div class="modal fade bd-example-modal-lg" id="xemthongtinPhIEUcb" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xem Phiếu Chế Biến</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="form-row">
+                    <input type="hidden" id="idKeHoachXem" />
+                    <div class="form-group col-md-6">
+                        <label>Mã Phiếu:</label>
+                        <span class="form-control" id="maPhieuCB" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Mã Kế Hoạch:</label>
+                        <span class="form-control" id="maKHCB" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Người Tạo:</label>
+                        <span class="form-control" id="ngtaoCB" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Người Nhận:</label>
+                        <span class="form-control" id="nguoiNhanCB" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Ngày Tạo:</label>
+                        <span class="form-control" id="ngayTaoCB" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Ngày Cập Nhật:</label>
+                        <span class="form-control" id="ngayHoanThanhCB" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Người Cập Nhật:</label>
+                        <span class="form-control" id="nguoiCapNhatCB" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <label>
+                        Danh Sách Sản Phẩm Chế Biến
+                    </label>
+                    <table id="tableShowViewKH12" class="table table-bordered table-striped table-hover table-responsive-xl">
+                        <thead>
+                            <tr>
+                                <th>Mã Số</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Mã Công Thức</th>
+                                <th>Số Lượng</th>
+                                <th>ĐVT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ShowViewKH12CB">
+                        </tbody>
+                    </table>
+                    <label style="float:right; margin-top: 20px;" id="TongTien"></label>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>

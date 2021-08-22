@@ -1,0 +1,96 @@
+﻿<!--Modal xem kế hoạch-->
+<div class="modal fade bd-example-modal-lg" id="exampleViewKH" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xem Kế Hoạch Đặt Hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <div class="form-row">
+                    <input type="hidden" id="idKeHoachXem" />
+                    <div class="form-group col-md-6">
+                        <label>Mã Số:</label>
+                        <span class="form-control" id="codeViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Tên Kế Hoạch:</label>
+                        <span class="form-control" id="nameViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Ngày Khởi Tạo:</label>
+                        <span class="form-control" id="createDateViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Ngày Dự Kiến:</label>
+                        <span class="form-control" id="dateDKViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Người Tạo:</label>
+                        <span class="form-control" id="nguoitaoViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Người Nhận:</label>
+                        <span class="form-control" id="nguoinhanViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Trạng Thái Kế Hoạch:</label>
+                        <span class="form-control" id="trangthaiViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Trạng Thái Nhận:</label>
+                        <span class="form-control" id="trangthaiNhanViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ghi Chú:</label>
+                    <span class="form-control" id="ghichuViewKH" style="border:none; border-bottom:1px solid #EEEEEE;">
+                    </span>
+                </div>
+                <div class="card-body">
+                    <label>
+                        Danh Sách Nguyên Vật Liệu Cần Đặt Hàng
+                    </label>
+                    <table id="tableShowViewKH12" class="table table-bordered table-striped table-hover table-responsive-xl">
+                        <thead>
+                            <tr>
+                                <th>Mã Số</th>
+                                <th>Nguyên Vật Liệu</th>
+                                <th>Số Lượng</th>
+                                <th>ĐVT</th>
+                                @*<th>Nhà Cung Cấp</th>*@
+                                <th>Ghi Chú</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ShowViewKH12">
+                        </tbody>
+                    </table>
+                    <label style="float:right; margin-top: 20px;" id="TongTien"></label>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="XoaKeHoachXem" onclick="XoaKeHoach()">Xóa</button>
+                <button type="button" class="btn btn-primary" id="SuaKeHoachXem" onclick="ChinhSuaKeHoach()">Chỉnh Sửa</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>

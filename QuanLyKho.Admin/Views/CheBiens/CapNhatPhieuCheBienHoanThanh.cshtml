@@ -1,0 +1,119 @@
+﻿<section class="content">
+    <!-- Default box -->
+    <div class="card collapsed-box">
+        <div class="card-header">
+            <h3 class="card-title">Danh Sách Phiếu Chế Biến Đang Chờ Nhập Sản Phẩm</h3>
+
+            <div class="card-tools">
+                <span title="Kế Hoạch Chế Biến" data-toggle="tooltip" data-placement="top" class="badge badge-warning" id="PhieuCountCho" style="float:left;">
+                </span>
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body" style="display: none;">
+
+            <form id="frmCapNhatPhieuTK" method="get">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="NgayPhanHoi" name="NgayTao" placeholder="Chọn ngày tạo">
+                                        <div class="input-group-append">
+                                            <button type="button" onclick="resetLaiNgayPhanHoi()" class="btn btn-default" title="Không tìm kiếm theo ngày">
+                                                <i class="fa fa-refresh"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" name="TuKhoa" id="TuKhoaTKCapNhatPhieu"
+                                               placeholder="Nhập mã số chế biến hoặc mã kế hoạch">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <table id="example2654" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã Phiếu</th>
+                        <th>Mã Kế Hoạch</th>
+                        <th>Ngày Tạo</th>
+                        <th>Người Tạo</th>
+                        <th>Người Nhận</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="phieuChoCB">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <!-- /.card -->
+</section>
+<!--Modal đánh dấu cập nhật -->
+<div class="modal fade" id="modalCapNhat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hoàn Thành Phiếu Chế Biến</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idPhieuCheBienDanhDau" />
+                <input type="hidden" id="idNguoiDuyetPhieu" value="@User.Identity.Name" />
+                <h5 class="modal-title" id="exampleModalLabelCB"></h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxHoanThanhPhieuCheBien()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal hủy phiếu -->
+<div class="modal fade" id="modalHuyPhieu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hủy Phiếu Chế Biến</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idPhieuCheBienHuy" />
+                <input type="hidden" id="idNguoiDuyetPhieuHuy" value="@User.Identity.Name" />
+
+                <h5 class="modal-title" id="exampleModalLabelCBHuy"></h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxHuyPhieu()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/ui/CheBienController/DuyetPhieuCheBien.js"></script>

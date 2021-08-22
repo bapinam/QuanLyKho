@@ -1,0 +1,145 @@
+﻿@using QuanLyKho.ViewModels.Common;
+@model PagedResult<QuanLyKho.ViewModels.ThongBao.ThongBaoModel>
+@{ ViewData["Title"] = "Thông Báo";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6" style="margin-bottom:8px; ">
+                <h1>Thông Báo</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right" style="margin-bottom:5px;">
+                    <div class="card-body">
+
+                        <!-- /btn-group -->
+                        <div class="input-group">
+                            <button type="button" onclick="window.location.href='/ThongBaos/Index'" class="btn btn-dark">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                            <!-- /btn-group -->
+                        </div>
+                        <!-- /input-group -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content" id="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <form asp-action="Index" method="get">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-10 offset-md-1">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" data-placeholder="Chọn trạng thái..." name="trangThai" style="width: 100%;">
+                                                    <option selected>Chọn trạng thái...</option>
+                                                    <option value="1">Chưa Xem</option>
+                                                    <option value="2">Đã Xem</option>
+                                                    <option value="3">Tất Cả</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="NgayNhan" name="ngayNhan" placeholder="Chọn ngày nhận">
+                                            </div>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type="search" class="form-control" name="tuKhoa"
+                                                           placeholder="Nhập nội dung tìm kiếm">
+                                                    <div class="input-group-append">
+                                                        <button type="submit" class="btn btn-default">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nội Dung</th>
+                                    <th>Ngày Nhận</th>
+                                    <th>Số Ngày Nhận</th>
+                                    <th>Người Gửi</th>
+                                    <th>Trạng Thái Xem</th>
+                                    @*<th class="text-center">Thao Tác</th>*@
+                                </tr>
+                            </thead>
+                            <tbody id="addTR">
+                                @foreach (var item in Model.Items)
+                                {
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-briefcase mr-2"></i>
+                                        <a href="@Html.DisplayFor(modelItem => item.DuongDan)">
+                                            @Html.DisplayFor(modelItem => item.Ten)
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.NgayNhan)
+                                    </td>
+
+                                    @if (item.SoNgayNhan >= 0)
+                                    {
+                                        <td>
+                                            Hôm nay
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SoNgayNhan) ngày trước
+                                        </td>
+                                    }
+                                    <td> @Html.DisplayFor(modelItem => item.NguoiGui)</td>
+                                    <td> @Html.DisplayFor(modelItem => item.Xem)</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <br />
+                        @await Component.InvokeAsync("Pager", Model)
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+<script>
+    // ngày dự kiến danh sách
+    $(function () {
+        $('#NgayNhan').daterangepicker({
+            opens: 'left',
+            defaultDate: '',
+            minDate: 0,
+        }, function (start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        }).val('');
+    });
+    $('#NgayNhan').val('');
+</script>

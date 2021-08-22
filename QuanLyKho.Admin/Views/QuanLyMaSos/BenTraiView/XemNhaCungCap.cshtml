@@ -1,0 +1,335 @@
+﻿@using QuanLyKho.Data.Extensions.Enums;
+<div class="card direct-chat direct-chat-primary table-hover12">
+    <div class="card-header">
+        <h3 class="card-title">Nhà Cung Cấp</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body" style="display:none;">
+        <div class="modal-body">
+            <form id="FormNCC" method="post">
+                <div class="form-row">
+                    <input type="hidden" id="TypeNCC" name="MaLoai" value="@MaLoai.NhaCungCap" />
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenNCC"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeNCC()" required>
+                    </div>
+                    <span class="text-danger" id="showTenNCC">
+                        Tên mã đã tồn tại
+                    </span>
+                    <div class="form-group col-md-6">
+                        <button type="submit" id="btnthemNCC" class="btn btn-primary">Thêm Vào</button>
+                    </div>
+                    <small>Tên mã + số tự tăng: CODE1</small>
+                </div>
+            </form>
+        </div>
+        <div class="modal-body">
+            <table id="NCCtable" class="table table-bordered ">
+                <thead>
+                    <tr>
+                        <th>Tên Mã</th>
+                        <th class="text-center">Ưu Tiên</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="addNCC">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--Modal xóa-->
+<div class="modal fade" id="exampleDeleteNCC" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idDeleteNCC" />
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có muốn xóa dữ liệu đã chọn?</h5>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxDeleteNCC()" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Sửa-->
+<div class="modal fade" id="exampleEditNCC" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mã Số</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!---->
+            <div class="modal-body">
+                <input type="hidden" id="idEditNCC" />
+                <input type="hidden" id="MaLoaiNCC" value="@MaLoai.NhaCungCap" />
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="TenNCCEdit"
+                               name="Ten" placeholder="Tên Mã" onkeyup="iCodeNCCEdit()" disabled>
+                        <span class="text-danger" id="erroGroupNCC">
+                            Tên đã tồn tại
+                        </span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" name="DinhDau" id="DinhDauEditNCC">
+                            <option value="true">Bật</option>
+                            <option value="false">Tắt</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" onclick="ajaxSaveNCC()" id="btnEditNCC" class="btn btn-primary">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Nhà Cung Cấp-->
+<script>
+    //kiểm tra tên
+    document.getElementById('showTenNCC').style.display = "none";
+    function iCodeNCC()
+    {
+        var nameNCC = $('#TenNCC').val().trim();
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameNCC} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('showTenNCC').style.display = "none";
+                    document.getElementById('btnthemNCC').style.display = "block";
+                } else {
+                    document.getElementById('showTenNCC').style.display = "block";
+                    document.getElementById('btnthemNCC').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('showTenNCC').style.display = "block";
+                    document.getElementById('btnthemNCC').style.display = "none";
+
+                }
+            });
+    }
+
+    document.getElementById('erroGroupNCC').style.display = "none";
+    document.getElementById('btnEditNCC').style.display = "block";
+
+    function iCodeNCCEdit()
+    {
+        var nameNCC1 = $('#TenNCCEdit').val().trim();
+        var id = $('#idEditNCC').val().trim();
+        $.ajax({
+                type: "GET",
+                 url: "@Url.Action("iTen")",
+             data: {ten: nameNCC1, id: id} ,
+                dataType: "json",
+            success: function (msg) {
+                if (msg) {
+                    document.getElementById('erroGroupNCC').style.display = "none";
+                    document.getElementById('btnEditNCC').style.display = "block";
+                } else {
+                    document.getElementById('erroGroupNCC').style.display = "block";
+                    document.getElementById('btnEditNCC').style.display = "none";
+
+                }
+                },
+             error: function (req, status, error) {
+                 document.getElementById('erroGroupNCC').style.display = "block";
+                 document.getElementById('btnEditNCC').style.display = "none";
+
+                }
+            });
+    }
+    //
+   GetNCC();
+    // Lấy giá trị của mã NCC
+    function GetNCC() {
+        var typeMVL = $("#TypeNCC").val();
+
+         $.ajax({
+                type: "GET",
+                 url: "@Url.Action("GetAll")",
+             data: {type: typeMVL} ,
+                dataType: "json",
+            success: function (msg) {
+                msg.forEach(function (item) {
+
+                    var str = '<tr id="NCC-' + item.id +'">' +
+                        '<td>' + item.ten + '</td>' +
+                        '<td>' +
+                        '<select class="form-control select2bs4" >';
+
+                    if (item.dinhDau) {
+                        str = str + '      <option  value="true">Bật</option>' ;
+                    } else {
+                        str = str + '      <option  value="false">Tắt</option>';
+                    }
+
+                    str = str + ' </select>' +
+                        '</td>' +
+                        '<td class="text-center py-0 align-middle">' +
+                        '<div class="btn-group btn-group-sm">' +
+                        '<a class="btn btn-primary" data-toggle="modal" data-target="#exampleEditNCC"' +
+                        '   onclick="GetEditNCC(' + item.id + ', \'' + item.ten + '\',' + item.dinhDau +')" title="Sửa">' +
+                        '   <i class="fas fa-pencil-alt"></i>' +
+                        '</a>' +
+                        '<a class="btn btn-danger" data-toggle="modal" data-target="#exampleDeleteNCC"' +
+                        '   onclick="GetDeleteNCC(' + item.id + ')" title="Xóa">' +
+                        '    <i class="fas fa-trash"></i>' +
+                        ' </a>' +
+                        '</div>' +
+                        ' </td>' +
+                        ' </tr >';
+                    $('#addNCC').append(str);
+                });
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Thêm thất bại')
+
+                }
+            });
+    }
+
+    // Thêm : btnthemNCC,TenNCC
+    var formNCC = $('#FormNCC');
+    formNCC.submit(function (e) {
+        var nameNCC = $('#TenNCC').val().trim();
+        if (nameNCC.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (nameNCC.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Create")",
+                    data: formNCC.serialize(),
+                    dataType: "json",
+                    success: function (msg) {
+                        toastr.success('Thêm thành công')
+
+                        $('#addNCC').remove();
+                        $('#NCCtable').append('<tbody id="addNCC"></tbody>');
+                        GetNCC();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Thêm thất bại')
+
+                    }
+                });
+            }
+        }
+        e.preventDefault();
+    });
+
+    // xóa
+    function GetDeleteNCC(id) {
+        $("#idDeleteNCC").val(id);
+    }
+
+    function ajaxDeleteNCC() {
+        var id = $("#idDeleteNCC").val();
+        $.ajax({
+            type: "DELETE",
+            url: "@Url.Action("Delete")",
+            data: {id:id},
+                dataType: "json",
+            success: function (msg) {
+                 if (msg.isSuccessed) {
+                     $('#exampleDeleteNCC').modal("hide")
+                     toastr.success('Xóa thành công')
+                     var de = "#NCC-" + id;
+                     $(de).remove();
+                 } else {
+                     toastr.error('Xóa thất bại')
+                 }
+
+                },
+                error: function (req, status, error) {
+                    toastr.error('Xóa thất bại')
+
+                }
+            });
+    }
+
+    // CẬP nhật
+    function GetEditNCC(id, name, top) {
+        document.getElementById('erroGroupNCC').style.display = "none";
+        document.getElementById('btnEditNCC').style.display = "block";
+        $("#idEditNCC").val(id);
+        $("#TenNCCEdit").val(name);
+        if (top) {
+            $("#DinhDauEditNCC").val("true");
+        } else {
+            $("#DinhDauEditNCC").val("false");
+        }
+    }
+
+    function ajaxSaveNCC() {
+        var id = $("#idEditNCC").val();
+        var name = $("#TenNCCEdit").val();
+        var top = $("#DinhDauEditNCC").val();
+        var type = $("#MaLoaiNCC").val();
+        if (name.length > 8) {
+            toastr.error('Độ dài tên mã không vượt quá 8 ký tự')
+        } else {
+            if (name.length < 4) {
+                toastr.error('Độ dài tên mã ít nhất 4 ký tự')
+            } else {
+                var data =
+                {
+                    Id: id,
+                    Ten: name,
+                    DinhDau: top,
+                    MaLoai: type
+                };
+                $.ajax({
+                    type: "PUT",
+                    url: "@Url.Action("Update")",
+                    data: data,
+                    dataType: "json",
+                    success: function (msg) {
+                        $('#exampleEditNCC').modal("hide")
+                        toastr.success('Cập nhật thành công');
+                        $('#addNCC').remove();
+                        $('#NCCtable').append('<tbody id="addNCC"></tbody>');
+                        GetNCC();
+
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Cập nhật thất bại');
+
+                    }
+                });
+            }
+        }
+    }
+</script>
