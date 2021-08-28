@@ -50,6 +50,13 @@ namespace QuanLyKho.Admin.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetTrangThaiCheBien(long id)
+        {
+            var result = await _keHoachDatHangApiClient.GetTrangThaiCheBien(id);
+            return Ok(result);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetInfoKeHoachCheBienDuKien(long id)
         {
             var result = await _keHoachDatHangApiClient.GetInfoKeHoachCheBienDuKien(id);

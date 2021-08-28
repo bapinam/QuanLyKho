@@ -144,7 +144,7 @@ namespace QuanLyKho.Service.DatHangService
                             var thongBao = new TaoThongBao()
                             {
                                 IdChiMuc = bundle.IdChiMuc,
-                                DuongDan = "/NhiemVuNhacNho/Index",
+                                DuongDan = "/CheBiens/Index",
                                 Ten = "Nguyên vật liệu " + nvl.MaSo + " vượt quá tồn",
                                 NguoiNhan = "admin",
                                 LoaiThongBao = LoaiThongBao.NhacNho,
@@ -155,7 +155,7 @@ namespace QuanLyKho.Service.DatHangService
 
                             var nhacNho = new NhacNhoSoLuong()
                             {
-                                DuongDan = "/NhiemVuNhacNho/Index",
+                                DuongDan = "/CheBiens/Index",
                                 Ten = "Nguyên vật liệu " + nvl.MaSo + " vượt quá tồn",
                                 IdThongBao = idThongBao.ResultObj,
                                 NguoiNhan = "admin"

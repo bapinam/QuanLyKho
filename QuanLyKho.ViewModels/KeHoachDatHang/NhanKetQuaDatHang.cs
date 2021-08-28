@@ -14,6 +14,9 @@ namespace QuanLyKho.ViewModels.KeHoachDatHang
         public string Ten { get; set; }
         public string NgayBatDauDuKien { get; set; }
         public string NgayKetThucDuKien { get; set; }
+        public string NgayTao { get; set; }
+        public string NguoiTao { get; set; }
+
         public string TrangThai { get; set; }
         public bool NhanKeHoach { get; set; }
         public string NguoiNhan { get; set; }

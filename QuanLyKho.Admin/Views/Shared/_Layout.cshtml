@@ -124,7 +124,7 @@
                 <span class="brand-text font-weight-light">Doanh Nghiệp</span>
             </a>
             @{ var admin = User.Claims.Any(x => x.Value == SystemConstants.ListRole.Admin); }
-            @{ var adminHeThong = User.Claims.Any(x => x.Value == SystemConstants.ListRole.AdminHeThong); }
+            @{ var adminHeThong = User.Claims.Any(x => x.Value == SystemConstants.ListRole.SystemAdmin); }
             @{ var quanLyCheBien = User.Claims.Any(x => x.Value == SystemConstants.ListRole.QuanLyCheBien); }
             @{ var quanLyDatHang = User.Claims.Any(x => x.Value == SystemConstants.ListRole.QuanLyDatHang); }
 

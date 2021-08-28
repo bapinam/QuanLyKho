@@ -41,7 +41,7 @@ namespace QuanLyKho.Utilities.Constants
         public class ListRole
         {
             public const string Admin = "Admin";
-            public const string AdminHeThong = "AdminHeThong";
+            public const string SystemAdmin = "SystemAdmin";
             public const string QuanLyCheBien = "QuanLyCheBien";
             public const string QuanLyDatHang = "QuanLyDatHang";
         }

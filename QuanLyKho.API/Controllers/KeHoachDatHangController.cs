@@ -42,6 +42,13 @@ namespace QuanLyKho.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("trang-thai-dukien/{id}")]
+        public async Task<IActionResult> GetTrangThaiCheBien(long id)
+        {
+            var result = await _keHoachDatHangService.GetTrangThaiCheBien(id);
+            return Ok(result);
+        }
+
         [HttpGet("paging/nhan-kehoach")]
         public async Task<IActionResult> NhanKeHoachDatHang([FromQuery] GetAllKeHoachDatHang bundle, string userName)
         {

@@ -4,6 +4,7 @@ using QuanLyKho.Data.Entities;
 using QuanLyKho.Data.Extensions.Enums;
 using QuanLyKho.Date.EF;
 using QuanLyKho.Service.ThongBaoService;
+using QuanLyKho.ViewModels.CheBien;
 using QuanLyKho.ViewModels.Common;
 using QuanLyKho.ViewModels.DonViTinh;
 using QuanLyKho.ViewModels.KeHoachCheBien;
@@ -115,7 +116,8 @@ namespace QuanLyKho.Service.KeHoachDatHangService
                 .Select(x => new DonViTinhModel()
                 {
                     Id = x.Id,
-                    Ten = x.Ten
+                    Ten = x.Ten,
+                    GiaTriChuyenDoi = x.GiaTriChuyenDoi
                 });
             return new List<DonViTinhModel>(result);
         }
@@ -145,9 +147,8 @@ namespace QuanLyKho.Service.KeHoachDatHangService
                     Id = x.Id,
                     MaSo = x.MaSo,
                     Ten = x.Ten,
-                    NgayDuKienBatDau = x.NgayBatDauDuKien.ToString("dd-MM-yyyy"),
-                    NhanKeHoach = x.NhanKeHoach == true ? "Đã nhận" : "Chưa nhận",
-                    NguoiTao = x.NguoiTao.MaSo,
+                    NgayTao = x.NgayTao.ToString("dd-MM-yyyy"),
+                    NguoiTao = x.NguoiTao.MaSo
                 }).ToListAsync();
             return new List<KeHoachCheBienModel>(ketQua);
         }
@@ -190,11 +191,10 @@ namespace QuanLyKho.Service.KeHoachDatHangService
                 {
                     IdNguyenVatLieu = item,
                     DonViTinh = bundle.DonViTinh[i],
-                    GhiChu = bundle.GhiChuDatHang[i],
                     SoLuong = bundle.SoLuong[i],
                     TrangThaiChiTiet = TrangThaiChiTiet.ChuaHoanThanh
                 };
-             
+
                 chiTietDatHangs.Add(chiTiet);
 
                 i++;
@@ -236,7 +236,11 @@ namespace QuanLyKho.Service.KeHoachDatHangService
                 NhanKeHoach = false,
                 ChiTietDatHangs = chiTietDatHangs
             };
+
+            var datHang = await _context.KeHoachCheBiens.FindAsync(bundle.IdKeHoachCheBien);
             _context.KeHoachDatHangs.Add(keHoachDatHang);
+            datHang.LenDatHang = true;
+            _context.KeHoachCheBiens.Update(datHang);
             await _context.SaveChangesAsync();
 
             var ngNhan = await _userManager.Users.Where(x => x.Id == bundle.IdNguoiNhan).FirstAsync();
@@ -246,8 +250,8 @@ namespace QuanLyKho.Service.KeHoachDatHangService
                 MaSo = keHoachDatHang.MaSo,
                 Ten = keHoachDatHang.Ten,
                 NguoiNhan = ngNhan.UserName,
-                NgayBatDauDuKien = keHoachDatHang.NgayBatDauDuKien.ToString("yyyy-MM-dd"),
-                NgayKetThucDuKien = keHoachDatHang.NgayKetThucDuKien.AddDays(1).ToString("yyyy-MM-dd")
+                NgayTao = keHoachDatHang.NgayTao.ToString("dd/MM/yyyy"),
+                NguoiTao = bundle.NguoiTao
             };
 
             //Khởi Tạo Thông báo
@@ -441,7 +445,7 @@ namespace QuanLyKho.Service.KeHoachDatHangService
                     chiTiet.GhiChu = bundle.GhiChuDatHang[i];
                     chiTiet.DonViTinh = bundle.DonViTinh[i];
                     chiTietDatHangCapNhats.Add(chiTiet);
-               
+
                     i++;
                 }
                 _context.ChiTietDatHangs.UpdateRange(chiTietDatHangCapNhats);
@@ -462,7 +466,7 @@ namespace QuanLyKho.Service.KeHoachDatHangService
                         DonViTinh = bundle.DonViTinhThem[i],
                         IdKeHoachDatHang = bundle.Id
                     };
-             
+
                     chiTietDatHangThemMois.Add(chiTietThem);
                     i++;
                 }
@@ -621,6 +625,7 @@ namespace QuanLyKho.Service.KeHoachDatHangService
                 NgayTao = x.NgayTao.ToString("dd/MM/yyyy"),
                 NguoiTao = x.NguoiTao.MaSo,
                 NguoiNhan = x.NguoiNhan.MaSo,
+                NhanKeHoach = x.NhanKeHoach == true ? "Đã nhận kế hoạch" : "Chưa nhận kế hoạch",
                 TrangThai = x.TrangThai == TrangThaiKeHoach.ChuaHoanThanh ? "Chưa hoàn thành" :
                                 x.TrangThai == TrangThaiKeHoach.HoanThanh ? "Hoàn thành" : "Bị hủy"
             }).ToListAsync();
@@ -719,6 +724,53 @@ namespace QuanLyKho.Service.KeHoachDatHangService
             _context.KeHoachDatHangs.Update(keHoach);
             await _context.SaveChangesAsync();
             return new ApiSuccessResult<bool>();
+        }
+
+        public async Task<ApiResult<string>> GetTrangThaiCheBien(long id)
+        {
+            var datHang = await _context.KeHoachCheBiens.FindAsync(id);
+            if (datHang.LenDatHang)
+            {
+                return new ApiErrorResult<string>("Đã đặt hàng");
+            }
+            var process = _context.ChiTietCheBiens.Include(x => x.CongThuc)
+               .ThenInclude(x => x.ChiTietCongThucs).ThenInclude(x => x.NguyenVatLieu)
+               .Where(x => x.IdKeHoachCheBien == id && x.TrangThaiChiTiet == TrangThaiChiTiet.ChuaHoanThanh);
+
+            process = process.Include(x => x.CongThuc.SanPham);
+
+            var result = await process.Select(x => new CongThucModelKeHoach()
+            {
+                SoLuong = x.SoLuong,
+                DonViTinh = x.DonViTinh,
+                DanhSachNguyenVatLieus = x.CongThuc.ChiTietCongThucs.Select(r => new DanhSachNguyenVatLieu()
+                {
+                    IdNguyenVatLieu = r.IdNguyenVatLieu,
+                    MaNguyenVatLieu = r.NguyenVatLieu.MaSo,
+                    TenNguyenVatLieu = r.NguyenVatLieu.Ten,
+                    SoLuongHienCoNVL = r.NguyenVatLieu.SoLuong,
+                    SoLuongCanCT = r.SoLuong,
+                    DonViTinh = r.DonViTinh,
+                    GiaTriChuyenDoi = r.NguyenVatLieu.DonViTinhs
+                    .Where(x => x.IdNguyenVatLieu == r.IdNguyenVatLieu && x.Ten == r.DonViTinh)
+                    .Select(x => x.GiaTriChuyenDoi)
+                    .First()
+                }).ToList()
+            }).ToListAsync();
+
+            foreach (var item in result)
+            {
+                foreach (var i in item.DanhSachNguyenVatLieus)
+                {
+                    var soLuongCT = item.SoLuong * i.SoLuongCanCT;
+                    var soLuongNVL = i.SoLuongHienCoNVL / i.GiaTriChuyenDoi;
+                    if (soLuongCT > soLuongNVL)
+                    {
+                        return new ApiErrorResult<string>("Chưa đủ hàng");
+                    }
+                }
+            }
+            return new ApiSuccessResult<string>();
         }
     }
 }

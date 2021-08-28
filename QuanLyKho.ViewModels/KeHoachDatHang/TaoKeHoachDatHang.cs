@@ -20,5 +20,6 @@ namespace QuanLyKho.ViewModels.KeHoachDatHang
         public string NguoiTao { get; set; }
         public Guid IdNguoiNhan { get; set; }
         public int IdChiMuc { get; set; }
+        public long IdKeHoachCheBien { get; set; }
     }
 }

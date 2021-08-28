@@ -136,6 +136,11 @@ namespace QuanLyKho.ApiIntegration.UserApiClient
 
         public async Task<ApiResult<string>> UpdateImage(UpdateImageUser bundle)
         {
+            if (bundle.File == null)
+            {
+                return JsonConvert.DeserializeObject<ApiErrorResult<string>>("");
+            }
+
             var requestContent = new MultipartFormDataContent();
 
             byte[] data;

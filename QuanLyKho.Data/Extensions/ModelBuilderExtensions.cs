@@ -17,8 +17,8 @@ namespace QuanLyKho.Data.Extensions
             modelBuilder.Entity<AppRole>().HasData(new AppRole
             {
                 Id = roleId,
-                Name = "AdminHeThong",
-                NormalizedName = "AdminHeThong",
+                Name = "SystemAdmin",
+                NormalizedName = "SystemAdmin",
                 MoTa = "Vai trò Administrator Hệ Thống"
             });
 
@@ -26,10 +26,10 @@ namespace QuanLyKho.Data.Extensions
             modelBuilder.Entity<AppUser>().HasData(new AppUser
             {
                 Id = adminId,
-                MaSo = "AdminHeThong",
+                MaSo = "SystemAdmin",
                 CanCuocCongDan = "0123456789",
-                UserName = "adminHeThong",
-                NormalizedUserName = "adminHeThong",
+                UserName = "SystemAdmin",
+                NormalizedUserName = "SystemAdmin",
                 Email = "khoaluan@gmail.com",
                 NormalizedEmail = "khoaluan@gmail.com",
                 EmailConfirmed = true,
@@ -41,7 +41,7 @@ namespace QuanLyKho.Data.Extensions
                 GioiTinh = true,
                 DiaChi = "Cần Thơ",
                 TinhTrangLamViec = TinhTrangLamViec.DangLamViec,
-                LoaiTaiKhoan = LoaiTaiKhoan.AdminHeThong
+                LoaiTaiKhoan = LoaiTaiKhoan.SystemAdmin
             });
 
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>

@@ -10,6 +10,6 @@ namespace QuanLyKho.Data.Extensions.Enums
     {
         NhanVien,
         Admin,
-        AdminHeThong
+        SystemAdmin
     }
 }

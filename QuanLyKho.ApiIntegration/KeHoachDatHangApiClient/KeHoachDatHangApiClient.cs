@@ -144,5 +144,12 @@ namespace QuanLyKho.ApiIntegration.KeHoachDatHangApiClient
             var result = await Update<bool, long>(url, id);
             return result;
         }
+
+        public async Task<ApiResult<string>> GetTrangThaiCheBien(long id)
+        {
+            var url = $"/api/KeHoachDatHang/trang-thai-dukien/{id}";
+            var result = await GetAsync<ApiResult<string>>(url);
+            return result;
+        }
     }
 }

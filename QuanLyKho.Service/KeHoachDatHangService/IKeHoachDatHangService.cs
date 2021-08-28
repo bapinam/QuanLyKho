@@ -45,5 +45,7 @@ namespace QuanLyKho.Service.KeHoachDatHangService
         Task<ApiResult<PagedResult<NhanKeHoachDatHang>>> NhanKeHoachDatHang(GetAllKeHoachDatHang bundle, string userName);
 
         Task<ApiResult<bool>> UpdateNhanKeHoach(long id);
+
+        Task<ApiResult<string>> GetTrangThaiCheBien(long id);
     }
 }

@@ -10,7 +10,7 @@ using QuanLyKho.Date.EF;
 namespace QuanLyKho.Data.Migrations
 {
     [DbContext(typeof(QuanLyKhoDbContext))]
-    [Migration("20210820010824_QuanLyKho")]
+    [Migration("20210827081149_QuanLyKho")]
     partial class QuanLyKho
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,15 +172,15 @@ namespace QuanLyKho.Data.Migrations
                         new
                         {
                             Id = new Guid("88a28f0b-99cd-4893-ab70-0189c8c7fec5"),
-                            ConcurrencyStamp = "e5539c30-9de5-4770-ab4b-55c2500e5b89",
+                            ConcurrencyStamp = "9b7445e2-7761-4d0a-80b7-deb4b4a3c629",
                             MoTa = "Vai trò Administrator Hệ Thống",
-                            Name = "AdminHeThong",
-                            NormalizedName = "AdminHeThong"
+                            Name = "SystemAdmin",
+                            NormalizedName = "SystemAdmin"
                         },
                         new
                         {
                             Id = new Guid("c7cbdfd3-bdda-4a4a-b2ae-5475f7400f56"),
-                            ConcurrencyStamp = "85febe73-e2dc-44ae-a36b-6b4da7553615",
+                            ConcurrencyStamp = "c3f26559-d77c-499a-a97b-14b3bbf5a496",
                             MoTa = "Vai trò Administrator",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -188,7 +188,7 @@ namespace QuanLyKho.Data.Migrations
                         new
                         {
                             Id = new Guid("1ed2a1cf-5d3d-471f-baf0-3b72d7161969"),
-                            ConcurrencyStamp = "13d8c4be-c91c-4bc8-a51f-869e866b2c3a",
+                            ConcurrencyStamp = "ad9c8437-58db-418c-aee4-80fa65a4ba4c",
                             MoTa = "Vai trò Quản lý đặt hàng",
                             Name = "QuanLyDatHang",
                             NormalizedName = "QuanLyDatHang"
@@ -196,7 +196,7 @@ namespace QuanLyKho.Data.Migrations
                         new
                         {
                             Id = new Guid("b2d0f535-7053-4d6c-9c3f-28e892858683"),
-                            ConcurrencyStamp = "13e1de8d-8a2e-4164-84bd-fdd26cbec1e9",
+                            ConcurrencyStamp = "cb40a6d5-4a6b-4e17-9f4c-83053cc485c7",
                             MoTa = "Vai trò Quản lý chế biến",
                             Name = "QuanLyCheBien",
                             NormalizedName = "QuanLyCheBien"
@@ -322,7 +322,7 @@ namespace QuanLyKho.Data.Migrations
                             Id = new Guid("0275d5a7-da4a-41c3-85ed-15e53cd1b7a0"),
                             AccessFailedCount = 0,
                             CanCuocCongDan = "0123456789",
-                            ConcurrencyStamp = "d3dd4a28-2cb8-43b3-83c5-9fe99bb37403",
+                            ConcurrencyStamp = "802bb920-ce47-44a9-a1ac-b7f7d4c8e48b",
                             DiaChi = "Cần Thơ",
                             Email = "khoaluan@gmail.com",
                             EmailConfirmed = true,
@@ -330,24 +330,24 @@ namespace QuanLyKho.Data.Migrations
                             Ho = "Lương Nhựt",
                             LoaiTaiKhoan = 2,
                             LockoutEnabled = false,
-                            MaSo = "AdminHeThong",
+                            MaSo = "SystemAdmin",
                             NgaySinh = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NormalizedEmail = "khoaluan@gmail.com",
-                            NormalizedUserName = "adminHeThong",
-                            PasswordHash = "AQAAAAEAACcQAAAAED5tnqCA2mE4Mv4g8AkGwsP7AJVfSMOA6DyTDsf/5Sit5BuoQt/DHSGBf1dBKJRiEQ==",
+                            NormalizedUserName = "SystemAdmin",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGJoxkfH7Pd8OqQCYt2D7l9vdv0Pon0Df9Oq/zEIvJXwlhHhNYTV5+bSa10/fU1twQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Ten = "Nam",
                             TinhTrangLamViec = 0,
                             TwoFactorEnabled = false,
-                            UserName = "adminHeThong"
+                            UserName = "SystemAdmin"
                         },
                         new
                         {
                             Id = new Guid("53e27774-4d9e-47bc-a7dc-b4faa6b9e140"),
                             AccessFailedCount = 0,
                             CanCuocCongDan = "0987654321",
-                            ConcurrencyStamp = "5ed375e4-5224-41a3-9e0d-d38f540b8bdc",
+                            ConcurrencyStamp = "fa0c89b7-6188-48be-b115-8ecf96891059",
                             DiaChi = "Cần Thơ",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -359,7 +359,7 @@ namespace QuanLyKho.Data.Migrations
                             NgaySinh = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NormalizedEmail = "admin@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPN6KFNtErhcN7CYEJOmi+kVrZYaylPl7weUrILtH1gWpjMVQqa5LVyXRx4dCqwhww==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECXlvZfpL+RU/x/cn5DmMq5K8vQ6PSS9RUWsvPOIhWmBDI9aD6+ejkvnY7p7JET0Fw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Ten = "Nam",
@@ -731,12 +731,12 @@ namespace QuanLyKho.Data.Migrations
                     b.Property<DateTime>("NgayMua")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 118, DateTimeKind.Local).AddTicks(1142));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 789, DateTimeKind.Local).AddTicks(1166));
 
                     b.Property<DateTime>("NgayTao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 116, DateTimeKind.Local).AddTicks(6397));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 787, DateTimeKind.Local).AddTicks(4069));
 
                     b.Property<string>("SoHoaDon")
                         .IsRequired()
@@ -808,17 +808,17 @@ namespace QuanLyKho.Data.Migrations
                     b.Property<DateTime>("NgayBatDauDuKien")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 123, DateTimeKind.Local).AddTicks(4333));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 794, DateTimeKind.Local).AddTicks(7405));
 
                     b.Property<DateTime>("NgayKetThucDuKien")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 123, DateTimeKind.Local).AddTicks(4640));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 794, DateTimeKind.Local).AddTicks(7728));
 
                     b.Property<DateTime>("NgayTao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 123, DateTimeKind.Local).AddTicks(3837));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 794, DateTimeKind.Local).AddTicks(6911));
 
                     b.Property<bool>("NhanKeHoach")
                         .HasColumnType("bit");
@@ -878,17 +878,17 @@ namespace QuanLyKho.Data.Migrations
                     b.Property<DateTime>("NgayBatDauDuKien")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 136, DateTimeKind.Local).AddTicks(3347));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 807, DateTimeKind.Local).AddTicks(8280));
 
                     b.Property<DateTime>("NgayKetThucDuKien")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 136, DateTimeKind.Local).AddTicks(3663));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 807, DateTimeKind.Local).AddTicks(8612));
 
                     b.Property<DateTime>("NgayTao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 136, DateTimeKind.Local).AddTicks(2857));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 807, DateTimeKind.Local).AddTicks(7787));
 
                     b.Property<bool>("NhanKeHoach")
                         .HasColumnType("bit");
@@ -1158,12 +1158,12 @@ namespace QuanLyKho.Data.Migrations
                     b.Property<DateTime>("NgayHoanThanh")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 174, DateTimeKind.Local).AddTicks(6013));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 846, DateTimeKind.Local).AddTicks(1701));
 
                     b.Property<DateTime>("NgayTao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 174, DateTimeKind.Local).AddTicks(5450));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 846, DateTimeKind.Local).AddTicks(1050));
 
                     b.Property<int>("TrangThaiPhieu")
                         .HasColumnType("int");
@@ -1307,7 +1307,7 @@ namespace QuanLyKho.Data.Migrations
                     b.Property<DateTime>("NgayNhan")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 8, 20, 8, 8, 23, 166, DateTimeKind.Local).AddTicks(2247));
+                        .HasDefaultValue(new DateTime(2021, 8, 27, 15, 11, 47, 838, DateTimeKind.Local).AddTicks(1308));
 
                     b.Property<string>("Ten")
                         .IsRequired()

@@ -291,7 +291,9 @@ function TimDonViTinhKH(id) {
         dataType: "json",
         success: function (msg) {
             msg.forEach(function (item) {
-                $(str).append(new Option(item.ten, item.ten));
+                var chuoi = '<option value="' + item.giaTriChuyenDoi + '-' + item.ten + '">'
+                    + item.ten + '</option> ';
+                $(str).append(chuoi);
             });
         },
         error: function (req, status, error) {
@@ -445,6 +447,16 @@ function ShowModalView(id) {
                     + '</tr>';
                 $("#ShowViewKH12").append(str);
             });
+            if (msg.resultObj.trangThai = "Chưa hoàn thành" && msg.resultObj.nhanKeHoach == "Chưa nhận kế hoạch") {
+
+                document.getElementById("XoaKeHoachXem").style.display = "block";
+                document.getElementById("SuaKeHoachXem").style.display = "block";
+            } else {
+                document.getElementById("XoaKeHoachXem").style.display = "none";
+                document.getElementById("SuaKeHoachXem").style.display = "none";
+            }
+
+
         },
         error: function (req, status, error) {
         }
@@ -816,6 +828,4 @@ $('#NgayDuKienDanhSach').val('');
 // show danh dách kế hoạch
 function GetViewShowDSKHDH(id) {
     ShowModalView(id);
-    document.getElementById("XoaKeHoachXem").style.display = "none";
-    document.getElementById("SuaKeHoachXem").style.display = "none";
 }

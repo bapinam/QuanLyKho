@@ -265,8 +265,11 @@
             success: function (msg) {
                 if (msg.isSuccessed) {
                     toastr.success('Xóa thành công');
-                    Remove(id);
+                   // Remove(id);
                     $("#exampleXoaKeHoachDH").modal("hide");
+
+                    var xoa = "#XemKHDH9-" + id;
+                    $(xoa).remove();
 
                     // gửi thông điệp
                     var user = msg.resultObj.nguoiNhan;
@@ -316,21 +319,21 @@
                     $("#IdNguoiNhanEdit").val('');
                     $('.NguyenVatLieuThemClassEdit').remove();
                     arrayThemNguyenVatLieuEdit = [];
-                    var ten = msg.resultObj.maSo + ": " + msg.resultObj.ten;
-                    Remove(msg.resultObj.id);
-                    AddEvent({
-                        id: msg.resultObj.id,
-                        title: ten,
-                        extendedProps: {
-                            department: false
-                        },
-                        description:'ChuaHoanThanh',
-                        start: new Date(msg.resultObj.ngayBatDauDuKien),
-                        end: new Date(msg.resultObj.ngayKetThucDuKien),
-                        backgroundColor: '#f39c12',
-                        borderColor: '#f39c12',
-                        allDay: true
-                    });
+                   // var ten = msg.resultObj.maSo + ": " + msg.resultObj.ten;
+                    //Remove(msg.resultObj.id);
+                    //AddEvent({
+                    //    id: msg.resultObj.id,
+                    //    title: ten,
+                    //    extendedProps: {
+                    //        department: false
+                    //    },
+                    //    description:'ChuaHoanThanh',
+                    //    start: new Date(msg.resultObj.ngayBatDauDuKien),
+                    //    end: new Date(msg.resultObj.ngayKetThucDuKien),
+                    //    backgroundColor: '#f39c12',
+                    //    borderColor: '#f39c12',
+                    //    allDay: true
+                    //});
 
                     // gửi thông điệp
                     if (!msg.resultObj.giaoChoNguoiKhac) {

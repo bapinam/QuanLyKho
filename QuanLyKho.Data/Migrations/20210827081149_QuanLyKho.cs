@@ -253,9 +253,9 @@ namespace QuanLyKho.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MaSo = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Ten = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 123, DateTimeKind.Local).AddTicks(3837)),
-                    NgayBatDauDuKien = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 123, DateTimeKind.Local).AddTicks(4333)),
-                    NgayKetThucDuKien = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 123, DateTimeKind.Local).AddTicks(4640)),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 794, DateTimeKind.Local).AddTicks(6911)),
+                    NgayBatDauDuKien = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 794, DateTimeKind.Local).AddTicks(7405)),
+                    NgayKetThucDuKien = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 794, DateTimeKind.Local).AddTicks(7728)),
                     GhiChu = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: false),
                     NhanKeHoach = table.Column<bool>(type: "bit", nullable: false),
@@ -297,9 +297,9 @@ namespace QuanLyKho.Data.Migrations
                     Ten = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DatHang = table.Column<int>(type: "int", nullable: false),
                     TrangThai = table.Column<int>(type: "int", nullable: false),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 136, DateTimeKind.Local).AddTicks(2857)),
-                    NgayBatDauDuKien = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 136, DateTimeKind.Local).AddTicks(3347)),
-                    NgayKetThucDuKien = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 136, DateTimeKind.Local).AddTicks(3663)),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 807, DateTimeKind.Local).AddTicks(7787)),
+                    NgayBatDauDuKien = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 807, DateTimeKind.Local).AddTicks(8280)),
+                    NgayKetThucDuKien = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 807, DateTimeKind.Local).AddTicks(8612)),
                     GhiChu = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     NhanKeHoach = table.Column<bool>(type: "bit", nullable: false),
                     IdNguoiTao = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -358,7 +358,7 @@ namespace QuanLyKho.Data.Migrations
                     Ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DuongDan = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Xem = table.Column<bool>(type: "bit", nullable: false),
-                    NgayNhan = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 166, DateTimeKind.Local).AddTicks(2247)),
+                    NgayNhan = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 838, DateTimeKind.Local).AddTicks(1308)),
                     LoaiThongBao = table.Column<int>(type: "int", nullable: false),
                     MaKeHoach = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     IdNguoiNhan = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -444,8 +444,8 @@ namespace QuanLyKho.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MaSo = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     IdKeHoach = table.Column<long>(type: "bigint", nullable: false),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 174, DateTimeKind.Local).AddTicks(5450)),
-                    NgayHoanThanh = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 174, DateTimeKind.Local).AddTicks(6013)),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 846, DateTimeKind.Local).AddTicks(1050)),
+                    NgayHoanThanh = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 846, DateTimeKind.Local).AddTicks(1701)),
                     TrangThaiPhieu = table.Column<int>(type: "int", nullable: false),
                     IdNguoiTao = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdNguoiDuyet = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -488,8 +488,8 @@ namespace QuanLyKho.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SoHoaDon = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     MaLuuTru = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    NgayMua = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 118, DateTimeKind.Local).AddTicks(1142)),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 20, 8, 8, 23, 116, DateTimeKind.Local).AddTicks(6397)),
+                    NgayMua = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 789, DateTimeKind.Local).AddTicks(1166)),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 8, 27, 15, 11, 47, 787, DateTimeKind.Local).AddTicks(4069)),
                     ThueSuat = table.Column<int>(type: "int", nullable: false),
                     ThanhToanHoaDon = table.Column<int>(type: "int", nullable: false),
                     SoTienDaTra = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValue: 0m),
@@ -770,10 +770,10 @@ namespace QuanLyKho.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "MoTa", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("88a28f0b-99cd-4893-ab70-0189c8c7fec5"), "e5539c30-9de5-4770-ab4b-55c2500e5b89", "Vai trò Administrator Hệ Thống", "AdminHeThong", "AdminHeThong" },
-                    { new Guid("c7cbdfd3-bdda-4a4a-b2ae-5475f7400f56"), "85febe73-e2dc-44ae-a36b-6b4da7553615", "Vai trò Administrator", "Admin", "Admin" },
-                    { new Guid("1ed2a1cf-5d3d-471f-baf0-3b72d7161969"), "13d8c4be-c91c-4bc8-a51f-869e866b2c3a", "Vai trò Quản lý đặt hàng", "QuanLyDatHang", "QuanLyDatHang" },
-                    { new Guid("b2d0f535-7053-4d6c-9c3f-28e892858683"), "13e1de8d-8a2e-4164-84bd-fdd26cbec1e9", "Vai trò Quản lý chế biến", "QuanLyCheBien", "QuanLyCheBien" }
+                    { new Guid("88a28f0b-99cd-4893-ab70-0189c8c7fec5"), "9b7445e2-7761-4d0a-80b7-deb4b4a3c629", "Vai trò Administrator Hệ Thống", "SystemAdmin", "SystemAdmin" },
+                    { new Guid("c7cbdfd3-bdda-4a4a-b2ae-5475f7400f56"), "c3f26559-d77c-499a-a97b-14b3bbf5a496", "Vai trò Administrator", "Admin", "Admin" },
+                    { new Guid("1ed2a1cf-5d3d-471f-baf0-3b72d7161969"), "ad9c8437-58db-418c-aee4-80fa65a4ba4c", "Vai trò Quản lý đặt hàng", "QuanLyDatHang", "QuanLyDatHang" },
+                    { new Guid("b2d0f535-7053-4d6c-9c3f-28e892858683"), "cb40a6d5-4a6b-4e17-9f4c-83053cc485c7", "Vai trò Quản lý chế biến", "QuanLyCheBien", "QuanLyCheBien" }
                 });
 
             migrationBuilder.InsertData(
@@ -781,8 +781,8 @@ namespace QuanLyKho.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "CanCuocCongDan", "ConcurrencyStamp", "DiaChi", "Email", "EmailConfirmed", "GioiTinh", "HinhAnh", "Ho", "LoaiTaiKhoan", "LockoutEnabled", "LockoutEnd", "MaSo", "NgaySinh", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Ten", "TinhTrangLamViec", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("0275d5a7-da4a-41c3-85ed-15e53cd1b7a0"), 0, "0123456789", "d3dd4a28-2cb8-43b3-83c5-9fe99bb37403", "Cần Thơ", "khoaluan@gmail.com", true, true, null, "Lương Nhựt", 2, false, null, "AdminHeThong", new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "khoaluan@gmail.com", "adminHeThong", "AQAAAAEAACcQAAAAED5tnqCA2mE4Mv4g8AkGwsP7AJVfSMOA6DyTDsf/5Sit5BuoQt/DHSGBf1dBKJRiEQ==", null, false, "", "Nam", 0, false, "adminHeThong" },
-                    { new Guid("53e27774-4d9e-47bc-a7dc-b4faa6b9e140"), 0, "0987654321", "5ed375e4-5224-41a3-9e0d-d38f540b8bdc", "Cần Thơ", "admin@gmail.com", true, true, null, "Lương Nhựt", 1, false, null, "Admin", new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", "admin", "AQAAAAEAACcQAAAAEPN6KFNtErhcN7CYEJOmi+kVrZYaylPl7weUrILtH1gWpjMVQqa5LVyXRx4dCqwhww==", null, false, "", "Nam", 0, false, "admin" }
+                    { new Guid("0275d5a7-da4a-41c3-85ed-15e53cd1b7a0"), 0, "0123456789", "802bb920-ce47-44a9-a1ac-b7f7d4c8e48b", "Cần Thơ", "khoaluan@gmail.com", true, true, null, "Lương Nhựt", 2, false, null, "SystemAdmin", new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "khoaluan@gmail.com", "SystemAdmin", "AQAAAAEAACcQAAAAEGJoxkfH7Pd8OqQCYt2D7l9vdv0Pon0Df9Oq/zEIvJXwlhHhNYTV5+bSa10/fU1twQ==", null, false, "", "Nam", 0, false, "SystemAdmin" },
+                    { new Guid("53e27774-4d9e-47bc-a7dc-b4faa6b9e140"), 0, "0987654321", "fa0c89b7-6188-48be-b115-8ecf96891059", "Cần Thơ", "admin@gmail.com", true, true, null, "Lương Nhựt", 1, false, null, "Admin", new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", "admin", "AQAAAAEAACcQAAAAECXlvZfpL+RU/x/cn5DmMq5K8vQ6PSS9RUWsvPOIhWmBDI9aD6+ejkvnY7p7JET0Fw==", null, false, "", "Nam", 0, false, "admin" }
                 });
 
             migrationBuilder.InsertData(
